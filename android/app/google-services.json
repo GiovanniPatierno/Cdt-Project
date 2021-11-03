@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "398548261087",
+    "project_id": "cdt-project-84f4e",
+    "storage_bucket": "cdt-project-84f4e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398548261087:android:f5abf3e7d39d8e6b18b16a",
+        "android_client_info": {
+          "package_name": "com.example.cdt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "398548261087-61bfek2mrppnql2ctlr36tmimdo5ue5s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACdrGLUxQMI_5TaQVx2ujxlutLkuQTNMw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "398548261087-61bfek2mrppnql2ctlr36tmimdo5ue5s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
