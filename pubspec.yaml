@@ -43,6 +43,7 @@ dependencies:
   provider: ^6.0.1
   auth_buttons: ^1.0.1+4
   cloud_firestore: ^2.5.4
+  firebase_database: ^8.0.1
 
 
 
