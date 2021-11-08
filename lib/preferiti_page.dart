@@ -1,23 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class Account extends StatefulWidget {
-  const Account({Key? key}) : super(key: key);
+class Preferiti extends StatefulWidget {
+  const Preferiti({Key? key}) : super(key: key);
 
   @override
-  _AccountState createState() => _AccountState();
+  _PreferitiState createState() => _PreferitiState();
 }
 
-class _AccountState extends State<Account> {
+class _PreferitiState extends State<Preferiti> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Account'),
+        title: const Text('Preferiti'),
         backgroundColor: Colors.black,
       ),
-      body:
-        Container(),
     );
   }
 }

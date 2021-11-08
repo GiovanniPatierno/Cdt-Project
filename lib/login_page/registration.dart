@@ -1,3 +1,4 @@
+import 'package:cdt/login_page/preferiti.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -27,157 +28,161 @@ class  _RegistrationCreateState extends State<Registration> {
     return Scaffold(
       backgroundColor: Colors.white,
         body:  SingleChildScrollView(
-            key : _formkey1,
             child:
-            Column(
-              children: <Widget>[
-                Container(
-                    padding: const EdgeInsets.all(5.00),
-                    margin: const EdgeInsets.only(top:35.0,right: 20.00,left:20.00),
-                    child: Image.asset(
-                      'assets/images/ex_logo.png',
+            Form(
+              key : _formkey1,
+              child:
+              Column(
+                  children: <Widget>[
+                    Container(
+                        padding: const EdgeInsets.all(5.00),
+                        margin: const EdgeInsets.only(top:35.0,right: 20.00,left:20.00),
+                        child: Image.asset(
+                          'assets/images/ex_logo.png',
+                        )
+                    ),
+                    Container(
+                      color: const Color(0x0b000000),
+                      margin: const EdgeInsets.only(top:70.00,right: 20.00,left:20.00),
+                      child:
+                      TextFormField(
+                        validator: (input) {
+                          if (input!.isEmpty) {
+                            return 'Inserici il tuo nome';
+                          }
+                        },
+                        onSaved: (input) => _nome = input!,
+                        decoration: const InputDecoration(
+                          //fillColor: Colors.white,
+                          border: InputBorder.none,
+                          labelText: '   Nome',
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              borderSide: BorderSide(color:  Color(0x0b000000)
+                              )),
+                          filled: true,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      color: const Color(0x0b000000),
+                      margin: const EdgeInsets.only(top:20.0,right: 20.00,left:20.00),
+                      child:
+                      TextFormField(
+                        validator: (input) {
+                          if (input!.isEmpty) {
+                            return 'Inserici il tuo cognome';
+                          }
+                        },
+                        onSaved: (input) => _cog = input!,
+                        decoration: const InputDecoration(
+                          //fillColor: Colors.white,
+                          border: InputBorder.none,
+                          labelText: '   Cognome',
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              borderSide: BorderSide(color:  Color(0x0b000000)
+                              )),
+                          filled: true,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      color: const Color(0x0b000000),
+                      margin: const EdgeInsets.only(top:20.0,right: 20.00,left:20.00),
+                      child:
+                      TextFormField(
+                        validator: (input1) {
+                          if (input1!.isEmpty) {
+                            return 'Inserici la tua Email';
+                          }
+                        },
+                        onSaved: (input1) => _email1 = input1!,
+                        decoration: const InputDecoration(
+                          //fillColor: Colors.white,
+                          border: InputBorder.none,
+                          labelText: '   Email',
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              borderSide: BorderSide(color:  Color(0x0b000000)
+                              )),
+                          filled: true,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      color: const Color(0x0b000000),
+                      margin: const EdgeInsets.only(top:20.0,right: 20.00,left:20.00),
+                      child:
+                      TextFormField(
+                        validator: (input) {
+                          RegExp regex = new RegExp(r'^.{6,}$');
+                          if (input!.isEmpty) {
+                            return 'Inserisci la tua password';
+                          }
+                          if(!regex.hasMatch(input)){
+                            ("Onserisci una password valida(Min. 6 caratteri)");
+                          }
+                        },
+                        obscureText: true,
+                        onSaved: (input) => _password1 = input!,
+                        decoration: const InputDecoration(
+                          //fillColor: Colors.white,
+                          border: InputBorder.none,
+                          suffixIcon:  Icon(
+                              Icons.visibility
+                          ),
+                          labelText: '   Password',
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              borderSide: BorderSide(color:  Color(0x0b000000)
+                              )),
+                          filled: true,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      color: const Color(0x0b000000),
+                      margin: const EdgeInsets.only(top:20.0,right: 20.00,left:20.00),
+                      child:
+                      TextFormField(
+                        validator: (input) {
+                          if (input!.isEmpty) {
+                            return 'Reinserisci la password';
+                          }
+                        },
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          //fillColor: Colors.white,
+                          border: InputBorder.none,
+                          suffixIcon:  Icon(
+                              Icons.visibility
+                          ),
+                          labelText: '   Reinserisci Password',
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              borderSide: BorderSide(color:  Color(0x0b000000)
+                              )),
+                          filled: true,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top:20.00),
+                      child:
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.black,
+                          onPrimary: Colors.white,
+                        ),
+                        onPressed:Registrati,
+                        child: const Text('REGISTRATI'),
+                      ),
                     )
-                ),
-                Container(
-                  color: const Color(0x0b000000),
-                  margin: const EdgeInsets.only(top:70.00,right: 20.00,left:20.00),
-                  child:
-                  TextFormField(
-                  validator: (input) {
-                    if (input!.isEmpty) {
-                      return 'Inserici il tuo nome';
-                    }
-                  },
-                  onSaved: (input) => _nome = input!,
-                    decoration: const InputDecoration(
-                      //fillColor: Colors.white,
-                      border: InputBorder.none,
-                      labelText: '   Nome',
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                          borderSide: BorderSide(color:  Color(0x0b000000)
-                          )),
-                      filled: true,
-                    ),
-                ),
-                ),
-                Container(
-                  color: const Color(0x0b000000),
-                  margin: const EdgeInsets.only(top:20.0,right: 20.00,left:20.00),
-                  child:
-                TextFormField(
-                  validator: (input) {
-                    if (input!.isEmpty) {
-                      return 'Inserici il tuo cognome';
-                    }
-                  },
-                  onSaved: (input) => _cog = input!,
-                  decoration: const InputDecoration(
-                    //fillColor: Colors.white,
-                    border: InputBorder.none,
-                    labelText: '   Cognome',
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        borderSide: BorderSide(color:  Color(0x0b000000)
-                        )),
-                    filled: true,
-                  ),
-                ),
-                ),
-                Container(
-                  color: const Color(0x0b000000),
-                  margin: const EdgeInsets.only(top:20.0,right: 20.00,left:20.00),
-                  child:
-                 TextFormField(
-                  validator: (input1) {
-                    if (input1!.isEmpty) {
-                      return 'Inserici la tua Email';
-                    }
-                  },
-                  onSaved: (input1) => _email1 = input1!,
-                   decoration: const InputDecoration(
-                     //fillColor: Colors.white,
-                     border: InputBorder.none,
-                     labelText: '   Email',
-                     focusedBorder: OutlineInputBorder(
-                         borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                         borderSide: BorderSide(color:  Color(0x0b000000)
-                         )),
-                     filled: true,
-                   ),
-                ),
-                ),
-                Container(
-                  color: const Color(0x0b000000),
-                  margin: const EdgeInsets.only(top:20.0,right: 20.00,left:20.00),
-                  child:
-                  TextFormField(
-                    validator: (input) {
-                      RegExp regex = new RegExp(r'^.{6,}$');
-                      if (input!.isEmpty) {
-                        return 'Inserisci la tua password';
-                      }
-                      if(!regex.hasMatch(input)){
-                        ("Onserisci una password valida(Min. 6 caratteri)");
-                      }
-                    },
-                    obscureText: true,
-                    onSaved: (input) => _password1 = input!,
-                    decoration: const InputDecoration(
-                      //fillColor: Colors.white,
-                      border: InputBorder.none,
-                      suffixIcon:  Icon(
-                          Icons.visibility
-                      ),
-                      labelText: '   Password',
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                          borderSide: BorderSide(color:  Color(0x0b000000)
-                          )),
-                      filled: true,
-                    ),
-                  ),
-                ),
-                Container(
-                  color: const Color(0x0b000000),
-                  margin: const EdgeInsets.only(top:20.0,right: 20.00,left:20.00),
-                  child:
-                  TextFormField(
-                    validator: (input) {
-                      if (input!.isEmpty) {
-                        return 'Reinserisci la password';
-                      }
-                    },
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      //fillColor: Colors.white,
-                      border: InputBorder.none,
-                      suffixIcon:  Icon(
-                          Icons.visibility
-                      ),
-                      labelText: '   Reinserisci Password',
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                          borderSide: BorderSide(color:  Color(0x0b000000)
-                          )),
-                      filled: true,
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top:20.00),
-                  child:
-                ElevatedButton(
-                   style: ElevatedButton.styleFrom(
-                   primary: Colors.black,
-                   onPrimary: Colors.white,
-                   ),
-                  onPressed:Registrati,
-                   child: const Text('REGISTRATI'),
-                ),
-                )
-                ]
+                  ]
+              ),
             ),
+
           )
       );
   }
@@ -189,7 +194,7 @@ class  _RegistrationCreateState extends State<Registration> {
      try {
        await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email1, password: _password1);
        postDetailToFirestore;
-       Navigator.pushReplacement(context, MaterialPageRoute(builder: (contex) => const Switchh()));
+       Navigator.pushReplacement(context, MaterialPageRoute(builder: (contex) => const PreferitiRegistrazione()));
      }on FirebaseAuthException catch(e){}
       }
     }

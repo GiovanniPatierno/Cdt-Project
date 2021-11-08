@@ -1,5 +1,5 @@
-import 'package:cdt/login_page/Login.dart';
 import 'package:cdt/login_page/google_sing_in.dart';
+import 'package:cdt/login_page/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';

@@ -1,8 +1,8 @@
 import 'package:cdt/account_page.dart';
 import 'package:cdt/home_page.dart';
 import 'package:cdt/map_page.dart';
-import 'package:cdt/notofications_page.dart';
 import 'package:cdt/padiglioni_page.dart';
+import 'package:cdt/preferiti_page.dart';
 import 'package:flutter/material.dart';
 
 class Switchh extends StatefulWidget {
@@ -20,7 +20,7 @@ class SwitchState extends State<Switchh> {
     const HomePage(),
     const Padiglioni(),
     const Map(),
-    const Notifications(),
+    const Preferiti(),
     const Account(),
   ];
 
@@ -53,8 +53,8 @@ class SwitchState extends State<Switchh> {
               label: 'Map'
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.notifications),
-              label: 'Notifiche'
+              icon: Icon(Icons.star),
+              label: 'Preferiti'
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.person),

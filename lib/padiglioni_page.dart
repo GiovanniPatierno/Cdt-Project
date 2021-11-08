@@ -16,6 +16,14 @@ class _PadiglioniState extends State<Padiglioni> {
         title: const Text('Padiglioni'),
         backgroundColor: Colors.black,
       ),
+      body:  SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(),
+          ],
+
+        ),
+      )
     );
   }
 }
