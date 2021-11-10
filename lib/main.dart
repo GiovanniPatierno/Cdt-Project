@@ -1,5 +1,7 @@
 import 'package:cdt/login_page/google_sing_in.dart';
 import 'package:cdt/login_page/login.dart';
+import 'package:cdt/login_page/preferiti.dart';
+import 'package:cdt/preferiti_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) => ChangeNotifierProvider(
       create: (context) => GoogleSignInProvider(),
       child :const MaterialApp(
-          home: Login(),
+          home: PreferitiRegistrazione(),
     ),
   );
 }

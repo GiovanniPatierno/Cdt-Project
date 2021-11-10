@@ -44,6 +44,8 @@ dependencies:
   auth_buttons: ^1.0.1+4
   cloud_firestore: ^2.5.4
   firebase_database: ^8.0.1
+  http: ^0.13.4
+  flutter_bloc: ^7.3.3
 
 
 

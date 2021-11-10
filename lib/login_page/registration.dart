@@ -194,7 +194,7 @@ class  _RegistrationCreateState extends State<Registration> {
      try {
        await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email1, password: _password1);
        postDetailToFirestore;
-       Navigator.pushReplacement(context, MaterialPageRoute(builder: (contex) => const PreferitiRegistrazione()));
+      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (contex) => const PreferitiRegistrazione()));
      }on FirebaseAuthException catch(e){}
       }
     }
