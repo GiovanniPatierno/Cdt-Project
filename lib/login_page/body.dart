@@ -19,152 +19,162 @@ class LoginBody extends StatefulWidget {
 }
 
 class _LoginBodyState extends State<LoginBody> {
+  String?errorMessage;
   late String _email, _password;
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold (
+    return Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
-          child: Form(
-            key : _formkey,
-           child:
-          Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                    padding: const EdgeInsets.all(5.00),
-                    margin: const EdgeInsets.only(top:35.0,right: 20.00,left:20.00),
-                    child: Image.asset(
-                      'assets/images/ex_logo.png',
-                    )
-                ),
-                Container(
-                  padding: const EdgeInsets.all(5.00),
-                  margin: const EdgeInsets.only(top:70.0,left: 20.00),
-                  child:
-                  const Text(
-                    'Login',
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 48,
-                      color: Color(0xde000000),
-                      height: 1.1666666666666667,
-                    ),
-                    textHeightBehavior:
-                    TextHeightBehavior(applyHeightToFirstAscent: false),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                Container(
-                  color: const Color(0x0b000000),
-                    margin: const EdgeInsets.only(top:10.0,right: 20.00,left:20.00),
-                    child:
-                    TextFormField(
-                      validator: (input) {
-                        if (input!.isEmpty) {
-                          return 'Inserici un email valida (ex. nuovaemail@gmail.com)';
-                        }
-                      },
-                      onSaved: (input) => _email = input!,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        labelText: '   Email',
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                            borderSide: BorderSide(color:  Color(0x0b000000))
-                            ),
-                        filled: true,
-                      ),
-                    )
-                ),
-                Container(
-                  color: const Color(0x0b000000),
-                  margin: const EdgeInsets.only(top:20.0,right: 20.00,left:20.00),
-                  child:
-                  TextFormField(
-                    validator: (input) {
-                      if (input!.length < 6) {
-                        return 'Your password need to be at least 6 characters';
-                      }
-                    },
-                    onSaved: (input) => _password = input!,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      suffixIcon:  Icon(
-                          Icons.visibility
-                      ),
-                      labelText: '   Password',
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                          borderSide: BorderSide(color:  Color(0x0b000000),
-                          )),
-                      filled: true,
-                    ),
-                  ),
-                ),
-                Center(
-                    child:
+            child: Form(
+              key: _formkey,
+              child:
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
                     Container(
-                        padding: const EdgeInsets.all(10.00),
-                        margin: const EdgeInsets.only(top:15.0,right: 110.00,left:110.00),
-                        child:
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.black,
-                            onPrimary: Colors.white,
-                          ),
-                          onPressed:signIn,
-                          child: const Text('ACCEDI'),
+                        padding: const EdgeInsets.all(5.00),
+                        margin: const EdgeInsets.only(
+                            top: 35.0, right: 20.00, left: 20.00),
+                        child: Image.asset(
+                          'assets/images/ex_logo.png',
                         )
-                    )
-                ),
-                Center(
-                  child:
-                  Container(
-                    padding: const EdgeInsets.only(top:50.0),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30)),
-                    child:
-                    GoogleAuthButton(
-                      darkMode: false,
-                      style:  const AuthButtonStyle(
-                          borderRadius:  20.00
-                      ),
-                      text : 'Accedi con Google',
-                      onPressed: () {
-                        final provider = Provider.of<GoogleSignInProvider>(context, listen:false);
-                        provider.googleLogin();
-                        Navigator.push(context,MaterialPageRoute(builder: (contex) => const Switchh()));
-                      },
                     ),
-                  ),
-                ),
-                const OrWidget(),
-                Center(
-                    child:
-                    GestureDetector(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> const Registration()));
+                    Container(
+                      padding: const EdgeInsets.all(5.00),
+                      margin: const EdgeInsets.only(top: 70.0, left: 20.00),
+                      child:
+                      const Text(
+                        'Login',
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 48,
+                          color: Color(0xde000000),
+                          height: 1.1666666666666667,
+                        ),
+                        textHeightBehavior:
+                        TextHeightBehavior(applyHeightToFirstAscent: false),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    Container(
+                        color: const Color(0x0b000000),
+                        margin: const EdgeInsets.only(
+                            top: 10.0, right: 20.00, left: 20.00),
+                        child:
+                        TextFormField(
+                          validator: (input) {
+                            if (input!.isEmpty) {
+                              return 'Inserici un email valida (ex. nuovaemail@gmail.com)';
+                            }
                           },
-                        child: const Text(
-                          'REGISTRATI ORA',
-                          style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 14,
-                            color:  Color(0xff000000),
-                            letterSpacing: 1.246,
-                            fontWeight: FontWeight.w500,
-                            height: 1.1428571428571428,
+                          onSaved: (input) => _email = input!,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            labelText: '   Email',
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(5.0)),
+                                borderSide: BorderSide(color: Color(0x0b000000))
+                            ),
+                            filled: true,
                           ),
-                        ))
-                )
-              ]
-          ),
-        )
+                        )
+                    ),
+                    Container(
+                      color: const Color(0x0b000000),
+                      margin: const EdgeInsets.only(
+                          top: 20.0, right: 20.00, left: 20.00),
+                      child:
+                      TextFormField(
+                        validator: (input) {
+                          if (input!.length < 6) {
+                            return 'Your password need to be at least 6 characters';
+                          }
+                        },
+                        onSaved: (input) => _password = input!,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          suffixIcon: Icon(
+                              Icons.visibility
+                          ),
+                          labelText: '   Password',
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(5.0)),
+                              borderSide: BorderSide(color: Color(0x0b000000),
+                              )),
+                          filled: true,
+                        ),
+                      ),
+                    ),
+                    Center(
+                        child:
+                        Container(
+                            padding: const EdgeInsets.all(10.00),
+                            margin: const EdgeInsets.only(
+                                top: 15.0, right: 110.00, left: 110.00),
+                            child:
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.black,
+                                onPrimary: Colors.white,
+                              ),
+                              onPressed: signIn,
+                              child: const Text('ACCEDI'),
+                            )
+                        )
+                    ),
+                    Center(
+                      child:
+                      Container(
+                        padding: const EdgeInsets.only(top: 50.0),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30)),
+                        child:
+                        GoogleAuthButton(
+                          darkMode: false,
+                          style: const AuthButtonStyle(
+                              borderRadius: 20.00
+                          ),
+                          text: 'Accedi con Google',
+                          onPressed: () {
+                            final provider = Provider.of<GoogleSignInProvider>(
+                                context, listen: false);
+                            provider.googleLogin();
+                            Navigator.push(context, MaterialPageRoute(builder: (
+                                contex) => const Switchh()));
+                          },
+                        ),
+                      ),
+                    ),
+                    const OrWidget(),
+                    Center(
+                        child:
+                        GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => const Registration()));
+                            },
+                            child: const Text(
+                              'REGISTRATI ORA',
+                              style: TextStyle(
+                                fontFamily: 'Roboto',
+                                fontSize: 14,
+                                color: Color(0xff000000),
+                                letterSpacing: 1.246,
+                                fontWeight: FontWeight.w500,
+                                height: 1.1428571428571428,
+                              ),
+                            ))
+                    )
+                  ]
+              ),
+            )
         )
     );
   }
@@ -172,16 +182,39 @@ class _LoginBodyState extends State<LoginBody> {
 
   Future<void> signIn() async {
     final formState = _formkey.currentState;
-    if(formState!.validate()){
+    if (formState!.validate()) {
       formState.save();
       try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
-        Navigator.push(context, MaterialPageRoute(builder: (contex) => const Switchh()));
-      }on FirebaseAuthException catch(e){}
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: _email, password: _password);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (contex) => const Switchh()));
+      }on FirebaseAuthException catch (error){switch (error.code) {
+        case "invalid-email":
+          errorMessage = "Your email address appears to be malformed.";
+
+          break;
+        case "wrong-password":
+          errorMessage = "Your password is wrong.";
+          break;
+        case "user-not-found":
+          errorMessage = "User with this email doesn't exist.";
+          break;
+        case "user-disabled":
+          errorMessage = "User with this email has been disabled.";
+          break;
+        case "too-many-requests":
+          errorMessage = "Too many requests";
+          break;
+        case "operation-not-allowed":
+          errorMessage = "Signing in with Email and Password is not enabled.";
+          break;
+        default:
+          errorMessage = "An undefined Error happened.";
+      }}
     }
   }
 }
-
 
 
 

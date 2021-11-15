@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:cdt/login_page/padiglioni.dart';
+import 'package:cdt/switchh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -126,27 +127,31 @@ class _PreferitiRegistrazioneState extends State<PreferitiRegistrazione> {
                         onPrimary: Colors.white,
                       ),
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (contex) => const PadiglioniRegistrazione()));
+                        Navigator.push(context, MaterialPageRoute(builder: (contex) => const PadiglioniRegistrazione()));
                       },
                       child: const Text('Avanti'),
                     ),
                   ),
                   Container(
                       padding: const EdgeInsets.only(bottom: 60.00),
-                    child:
-                      const Text(
-                        'Salta questo passaggio',
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontSize: 15,
-                          color: Color(0xde000000),
-                          letterSpacing: 0.495,
-                          height: 1.3333333333333333,
-                        ),
-                        textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
-                        textAlign: TextAlign.left,
-                      )
+                      child:
+                          GestureDetector(
+                            onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> const Switchh())); },
+                              child:
+                              const Text(
+                                'Salta questo passaggio',
+                                style: TextStyle(
+                                  fontFamily: 'Roboto',
+                                  fontSize: 15,
+                                  color: Color(0xde000000),
+                                  letterSpacing: 0.495,
+                                  height: 1.3333333333333333,
+                                ),
+                                textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
+                                textAlign: TextAlign.left,
+                              )
+                          )
                   )
                 ]
             )
@@ -156,7 +161,7 @@ class _PreferitiRegistrazioneState extends State<PreferitiRegistrazione> {
 }
 
 class PhotosList extends StatelessWidget {
-   PhotosList({Key? key, required this.photos}) : super(key: key);
+  PhotosList({Key? key, required this.photos}) : super(key: key);
   bool isChecked = false;
   final List<Photo> photos;
 
