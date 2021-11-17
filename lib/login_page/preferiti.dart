@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:cdt/login_page/padiglioni.dart';
 import 'package:cdt/switchh.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +13,6 @@ import 'package:http/http.dart' as http;
 Future<List<Photo>> fetchPhotos(http.Client client) async {
   final response = await client
       .get(Uri.parse('http://192.168.1.241:9250/api/interessi'));
-  print(response.body);
   // Use the compute function to run parsePhotos in a separate isolate.
   return compute(parsePhotos, response.body);
 }
@@ -18,7 +20,6 @@ Future<List<Photo>> fetchPhotos(http.Client client) async {
 // A function that converts a response body into a List<Photo>.
 List<Photo> parsePhotos(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-
   return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
 }
 
@@ -48,10 +49,11 @@ class PreferitiRegistrazione extends StatefulWidget {
 
 class _PreferitiRegistrazioneState extends State<PreferitiRegistrazione> {
 
-
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
     return MaterialApp(
         home: Scaffold(
             body: Column(
@@ -59,9 +61,9 @@ class _PreferitiRegistrazioneState extends State<PreferitiRegistrazione> {
                   Container(
                     padding: const EdgeInsets.only(right: 330.00),
                     child:
-                      Image.asset("assets/images/main_top.png",
+                    Image.asset("assets/images/main_top.png",
                       width: size.width * 0.3,
-                      ),
+                    ),
                   ),
                   Container(
                     padding: const EdgeInsets.only(top: 30.00),
@@ -98,7 +100,7 @@ class _PreferitiRegistrazioneState extends State<PreferitiRegistrazione> {
                   Expanded(
                     child:
                     Container(
-                      padding: const EdgeInsets.only(bottom:40.00),
+                      padding: const EdgeInsets.only(bottom: 40.00),
                       child:
                       FutureBuilder<List<Photo>>(
                         future: fetchPhotos(http.Client()),
@@ -127,7 +129,8 @@ class _PreferitiRegistrazioneState extends State<PreferitiRegistrazione> {
                         onPrimary: Colors.white,
                       ),
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (contex) => const PadiglioniRegistrazione()));
+                        Navigator.push(context, MaterialPageRoute(builder: (
+                            contex) => const PadiglioniRegistrazione()));
                       },
                       child: const Text('Avanti'),
                     ),
@@ -135,35 +138,41 @@ class _PreferitiRegistrazioneState extends State<PreferitiRegistrazione> {
                   Container(
                       padding: const EdgeInsets.only(bottom: 60.00),
                       child:
-                          GestureDetector(
-                            onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> const Switchh())); },
-                              child:
-                              const Text(
-                                'Salta questo passaggio',
-                                style: TextStyle(
-                                  fontFamily: 'Roboto',
-                                  fontSize: 15,
-                                  color: Color(0xde000000),
-                                  letterSpacing: 0.495,
-                                  height: 1.3333333333333333,
-                                ),
-                                textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
-                                textAlign: TextAlign.left,
-                              )
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => const Switchh()));
+                          },
+                          child:
+                          const Text(
+                            'Salta questo passaggio',
+                            style: TextStyle(
+                              fontFamily: 'Roboto',
+                              fontSize: 15,
+                              color: Color(0xde000000),
+                              letterSpacing: 0.495,
+                              height: 1.3333333333333333,
+                            ),
+                            textHeightBehavior: TextHeightBehavior(
+                                applyHeightToFirstAscent: false),
+                            textAlign: TextAlign.left,
                           )
+                      )
                   )
                 ]
             )
         )
     );
   }
+
+
 }
 
 class PhotosList extends StatelessWidget {
   PhotosList({Key? key, required this.photos}) : super(key: key);
   bool isChecked = false;
   final List<Photo> photos;
+
 
   @override
   Widget build(BuildContext context) {
@@ -177,15 +186,20 @@ class PhotosList extends StatelessWidget {
         return ListTile(
           title: Text(photos[index].name),
           leading: const Icon(Icons.circle),
-          trailing: const Box()
+          trailing: Box(photos: photos, index: index)
         );
       },
     );
   }
+
 }
 
+
 class Box extends StatefulWidget {
-  const Box({Key? key}) : super(key: key);
+   const Box({Key? key, required this.photos, required this.index}) : super(key: key);
+
+  final List<Photo> photos;
+  final int index;
 
   @override
   _BoxState createState() => _BoxState();
@@ -193,6 +207,10 @@ class Box extends StatefulWidget {
 
 class _BoxState extends State<Box> {
   bool isChecked = false;
+  DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child("uid");
+  final _auth1 = FirebaseAuth.instance;
+
+
   @override
   Widget build(BuildContext context) {
     return Checkbox(
@@ -201,11 +219,42 @@ class _BoxState extends State<Box> {
       onChanged: (bool? value) {
         setState(() {
           isChecked = value!;
+          if (isChecked == true) {
+            postDetailToFirestore1();
+          }else{
+            removeDetailtofirestore();
+          }
         });
       },
     );
   }
+
+  postDetailToFirestore1() async {
+    FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
+    User? user = _auth1.currentUser;
+
+    await firebaseFirestore1
+        .collection("uid")
+        .doc(user!.uid)
+        .update({
+      'interessi': FieldValue.arrayUnion([widget.photos[widget.index].name])
+    });
+
+  }
+  removeDetailtofirestore() async {
+    FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
+    User? user = _auth1.currentUser;
+
+    await firebaseFirestore1
+        .collection("uid")
+        .doc(user!.uid)
+        .update({
+      'interessi': FieldValue.arrayRemove([widget.photos[widget.index].name])
+    });
+
+  }
 }
+
 
 
 

@@ -111,7 +111,8 @@ class _AccountState extends State<Account> {
         title: const Text('Account'),
         backgroundColor: Colors.black,
       ),
-      body: Column(
+      body: SingleChildScrollView(child:
+      Column(
         children: <Widget>[
           Stack(
             alignment: Alignment.bottomCenter,
@@ -189,27 +190,27 @@ class _AccountState extends State<Account> {
 
           ],
           ),
-          Container(
-            padding: const EdgeInsets.only(left:20.00, right: 20.00),
-            child:
-                Column(
-                  children: <Widget>[
-          const SizedBox(height: 20),
-          passwordField,
-          const SizedBox(height: 20),
-          confirmPasswordField,
-          const SizedBox(height: 50),
-          signUpButton,
-                    const SizedBox(height: 5),
-           const Divider(
-            color: Colors.black,
-            height: 1,
-          ),
+                Container(
+                    padding: const EdgeInsets.only(left:20.00, right: 20.00),
+                  child:
+                    Column(
+                      children: <Widget>[
+                         const SizedBox(height: 20),
+                           passwordField,
+                             const SizedBox(height: 20),
+                           confirmPasswordField,
+                         const SizedBox(height: 50),
+                         signUpButton,
+                            const SizedBox(height: 5),
+                           const Divider(
+                         color: Colors.black,
+                          height: 1,
+                            ),
                     const SizedBox(height: 10),
-          Center(
-              child:
-              GestureDetector(
-                  onTap: () {
+                        Center(
+                            child:
+                            GestureDetector(
+                                onTap: () {
                    // Navigator.push(context, MaterialPageRoute(
                         //builder: (context) => const Registration()));
                   },
@@ -228,9 +229,10 @@ class _AccountState extends State<Account> {
               ]
           )
           )
+
             ],
           )
-
+    )
     );
   }
 }

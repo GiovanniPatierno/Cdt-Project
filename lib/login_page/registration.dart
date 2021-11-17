@@ -19,7 +19,7 @@ class Registration extends StatefulWidget {
 class  _RegistrationCreateState extends State<Registration> {
 String?errorMessage;
 
-  DatabaseReference dbRef = FirebaseDatabase.instance.reference().child("utenti");
+  DatabaseReference dbRef = FirebaseDatabase.instance.reference().child("uid");
   final GlobalKey<FormState> _formkey1 = GlobalKey<FormState>();
   final _auth = FirebaseAuth.instance;
 
@@ -287,7 +287,7 @@ String?errorMessage;
     userModel.uid = user.uid;
 
     await firebaseFirestore
-        .collection("utenti")
+        .collection("uid")
         .doc(user.uid)
         .set(userModel.toMap());
 
@@ -301,8 +301,9 @@ class UserModel {
   String? name;
   String? secondname;
   String? email;
+  List<String>? interessi;
 
-  UserModel({this.uid, this.name, this.secondname, this.email});
+  UserModel({this.uid, this.name, this.secondname, this.email,  this.interessi});
 
   //data from server
   factory UserModel.fromMap(map){
@@ -310,7 +311,8 @@ class UserModel {
         uid: map['uid'],
         email: map['email'],
         name: map['name'],
-        secondname: map['secondname']
+        secondname: map['secondname'],
+        interessi: map['interessi']
     );
   }
 
@@ -321,6 +323,7 @@ class UserModel {
       'email': email,
       'name': name,
       'secondname': secondname,
+      'interessi': interessi,
     };
   }
 

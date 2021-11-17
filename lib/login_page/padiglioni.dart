@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +12,6 @@ import '../switchh.dart';
 Future<List<Photo>> fetchPhotos(http.Client client) async {
   final response = await client
       .get(Uri.parse('http://192.168.1.241:9250/api/padiglioni'));
-  print(response.body);
   // Use the compute function to run parsePhotos in a separate isolate.
   return compute(parsePhotos, response.body);
 }
@@ -24,16 +26,16 @@ List<Photo> parsePhotos(String responseBody) {
 class Photo {
   final String id;
   final String nome;
-  //final String descrizione;
   final String area;
-  //final String immagine;
+  bool check = false;
 
-  const Photo( {
-    //required this.immagine,
-    //required this.descrizione,
+
+   Photo( {
     required this.area,
     required this.id,
     required this.nome,
+    required this.check
+
   });
 
   factory Photo.fromJson(Map<String, dynamic> json) {
@@ -41,11 +43,64 @@ class Photo {
       id: json['id'] as String,
       nome: json['nome'] as String,
       area: json['area'] as String,
-      //immagine: json['immagine'] as String,
-      //descrizione: json['descrizione'] as String,
+      check: false,
     );
   }
 }
+
+Future<List<Interessi>> fetchPreferiti(http.Client client) async {
+
+  final _auth1 = FirebaseAuth.instance;
+  User? user = _auth1.currentUser;
+  DocumentSnapshot variable = await FirebaseFirestore.instance.collection('uid').doc(user!.uid).get();
+  //print(variable['interessi']);
+  String totale ='';
+  List<dynamic> interesse =  variable['interessi'];
+   for(int i=0; i<interesse.length; i++){
+     totale = totale+","+variable['interessi'][i];
+   }
+
+
+  //parte che comunica con api
+   String Url = 'http://192.168.1.241:9250/api/padiglioni?interessi=';
+  final response1 = await client
+      .get(Uri.parse(Url + totale));
+  // Use the compute function to run parsePhotos in a separate isolate.
+  return compute(parsePreferiti, response1.body);
+}
+
+
+
+
+// A function that converts a response body into a List<Interessi>.
+List<Interessi> parsePreferiti(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  return parsed.map<Interessi>((json) => Interessi.fromJson(json)).toList();
+}
+
+class Interessi {
+  final String id;
+  final String nome;
+  final String area;
+
+
+  const Interessi( {
+    required this.area,
+    required this.id,
+    required this.nome,
+
+
+  });
+
+  factory Interessi.fromJson(Map<String, dynamic> json) {
+    return Interessi(
+      id: json['id'] as String,
+      nome: json['nome'] as String,
+      area: json['area'] as String,
+    );
+  }
+}
+
 
 class PadiglioniRegistrazione extends StatefulWidget {
   const PadiglioniRegistrazione({Key? key}) : super(key: key);
@@ -56,6 +111,7 @@ class PadiglioniRegistrazione extends StatefulWidget {
 
 class _PadiglioniRegistrazioneState extends State<PadiglioniRegistrazione> {
   bool value = false;
+
 
 
   @override
@@ -124,74 +180,121 @@ class _PadiglioniRegistrazioneState extends State<PadiglioniRegistrazione> {
       );
 }
 
-
 class Photolist2 extends StatelessWidget {
   Photolist2({Key? key, required this.photos}) : super(key: key);
-  bool isChecked = false;
   final List<Photo> photos;
+
 
 
   @override
   Widget build(BuildContext context) {
-    return Container( child:
+    return FutureBuilder<List<Interessi>>(
+      future: fetchPreferiti(http.Client()),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(
+            child: Text('An error has occurred!'),
+          );
+        } else if (snapshot.hasData) {
+             return PreferList(interessi: snapshot.data!, photos:photos);
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+
+  }
+}
+
+class PreferList extends StatelessWidget {
+  const PreferList({Key? key,  required this.interessi, required this.photos}) : super(key: key);
+  final List<Interessi> interessi;
+  final List<Photo> photos;
+
+  @override
+  Widget build(BuildContext context) {
+      return Container(child:
         GridView.count(
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         crossAxisCount: 2,
         primary: false,
-            children:
-      List.generate(27, (index)
-    {
-      return
-      Card(
-          child:
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Stack( children: [
-                Container(padding : const EdgeInsets.only(bottom: 5.00),
-            child:
-            Image.asset('assets/images/padglione.jpg',width: 1000 ,height: 120),
-                ),
-                  Container(
-                    alignment: Alignment.topRight,
-                      child: const Box()),
-            ]
-                ),
-            ListTile(
-              //leading: const Box(),
-              title: Text(photos[index].nome, overflow: TextOverflow.ellipsis,maxLines: 2),
-              )
-          ]
-          )
-      );
-    }
-          )
+        children:
+        List.generate(27, (index) {
+          return
+            Card(
+                child:
+                Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Stack(children: [
+                        Container(padding: const EdgeInsets.only(bottom: 5.00),
+                          child:
+                          Image.asset(
+                              'assets/images/padglione.jpg', width: 1000,
+                              height: 120),
+                        ),
+                        Container(
+                            alignment: Alignment.topRight,
+                            child: Box(interessi: interessi,photos: photos, index: index))
+                      ]
+                      ),
+                      ListTile(
+                        //leading: const Box(),
+                        title: Text(photos[index].nome, overflow: TextOverflow.ellipsis, maxLines: 2),
+                      )
+                    ]
+                )
+            );
+        }
         )
+    )
     );
   }
 }
 
+
 class Box extends StatefulWidget {
-  const Box({Key? key}) : super(key: key);
+  const Box({Key? key,required this.interessi, required this.photos, required this.index}) : super(key: key);
+  final List<Photo> photos;
+  final List<Interessi> interessi;
+  final int index;
 
   @override
   _BoxState createState() => _BoxState();
 }
 
 class _BoxState extends State<Box> {
-  bool isChecked = false;
+  DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child("uid");
+  final _auth1 = FirebaseAuth.instance;
+
+  //bool isChecked = false;
+
   @override
   Widget build(BuildContext context) {
     return Checkbox(
       shape: const CircleBorder(),
       activeColor: Colors.black,
-      value: isChecked,
+      value: Control(widget.index),
       onChanged: (bool? value) {
         setState(() {
-          isChecked = value!;
+          widget.photos[widget.index].check = value!;
         });
       },
     );
   }
+
+  bool Control(int index) {
+    bool value = false;
+      for (int j = 0; j < widget.interessi.length; j++) {
+        if (widget.photos[index].nome == widget.interessi[j].nome) {
+          widget.photos[index].check = true;
+        }
+     value = widget.photos[index].check;
+    }
+    return value;
+  }
 }
+
