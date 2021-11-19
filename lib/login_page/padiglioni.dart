@@ -19,7 +19,6 @@ Future<List<Photo>> fetchPhotos(http.Client client) async {
 // A function that converts a response body into a List<Photo>.
 List<Photo> parsePhotos(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-
   return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
 }
 
@@ -49,7 +48,7 @@ class Photo {
 }
 
 Future<List<Interessi>> fetchPreferiti(http.Client client) async {
-
+  //Comunicazione con firebase
   final _auth1 = FirebaseAuth.instance;
   User? user = _auth1.currentUser;
   DocumentSnapshot variable = await FirebaseFirestore.instance.collection('uid').doc(user!.uid).get();
@@ -83,7 +82,6 @@ class Interessi {
   final String nome;
   final String area;
 
-
   const Interessi( {
     required this.area,
     required this.id,
@@ -111,8 +109,7 @@ class PadiglioniRegistrazione extends StatefulWidget {
 
 class _PadiglioniRegistrazioneState extends State<PadiglioniRegistrazione> {
   bool value = false;
-
-
+  bool check = false;
 
   @override
   Widget build(BuildContext context) =>
@@ -150,7 +147,7 @@ class _PadiglioniRegistrazioneState extends State<PadiglioniRegistrazione> {
                             child: Text('An error has occurred!'),
                           );
                         } else if (snapshot.hasData) {
-                          return Photolist2(photos: snapshot.data!);
+                          return Photolist2(photos: snapshot.data!, check: check);
                         } else {
                           return const Center(
                             child: CircularProgressIndicator(),
@@ -181,8 +178,9 @@ class _PadiglioniRegistrazioneState extends State<PadiglioniRegistrazione> {
 }
 
 class Photolist2 extends StatelessWidget {
-  Photolist2({Key? key, required this.photos}) : super(key: key);
+  Photolist2({Key? key, required this.photos, required this.check}) : super(key: key);
   final List<Photo> photos;
+  bool check = false;
 
 
 
@@ -196,7 +194,7 @@ class Photolist2 extends StatelessWidget {
             child: Text('An error has occurred!'),
           );
         } else if (snapshot.hasData) {
-             return PreferList(interessi: snapshot.data!, photos:photos);
+             return PreferList(interessi: snapshot.data!, photos:photos, check: check);
         } else {
           return const Center(
             child: CircularProgressIndicator(),
@@ -209,14 +207,16 @@ class Photolist2 extends StatelessWidget {
 }
 
 class PreferList extends StatelessWidget {
-  const PreferList({Key? key,  required this.interessi, required this.photos}) : super(key: key);
+  PreferList({Key? key,  required this.interessi, required this.photos, required this.check}) : super(key: key);
   final List<Interessi> interessi;
   final List<Photo> photos;
+  bool check = false;
+
 
   @override
   Widget build(BuildContext context) {
-      return Container(child:
-        GridView.count(
+    return Container(child:
+    GridView.count(
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         crossAxisCount: 2,
@@ -238,12 +238,18 @@ class PreferList extends StatelessWidget {
                         ),
                         Container(
                             alignment: Alignment.topRight,
-                            child: Box(interessi: interessi,photos: photos, index: index))
+                            child: Box(interessi: interessi,
+                                photos: photos,
+                                index: index,
+                                check: Control(index, check)
+                            ))
                       ]
                       ),
                       ListTile(
                         //leading: const Box(),
-                        title: Text(photos[index].nome, overflow: TextOverflow.ellipsis, maxLines: 2),
+                        title: Text(
+                            photos[index].nome, overflow: TextOverflow.ellipsis,
+                            maxLines: 2),
                       )
                     ]
                 )
@@ -253,48 +259,53 @@ class PreferList extends StatelessWidget {
     )
     );
   }
+  bool Control(int index, bool value) {
+    for (int j = 0; j < interessi.length; j++) {
+      if (photos[index].nome == interessi[j].nome) {
+        photos[index].check = true;
+      }
+      value = photos[index].check;
+    }
+    return value;
+  }
 }
 
 
 class Box extends StatefulWidget {
-  const Box({Key? key,required this.interessi, required this.photos, required this.index}) : super(key: key);
+  Box({Key? key,required this.interessi, required this.photos, required this.index, required this.check}) : super(key: key);
   final List<Photo> photos;
   final List<Interessi> interessi;
   final int index;
+  bool check = false;
 
   @override
   _BoxState createState() => _BoxState();
 }
 
 class _BoxState extends State<Box> {
-  DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child("uid");
-  final _auth1 = FirebaseAuth.instance;
-
-  //bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
     return Checkbox(
       shape: const CircleBorder(),
       activeColor: Colors.black,
-      value: Control(widget.index),
+      value: widget.check ,
       onChanged: (bool? value) {
-        setState(() {
-          widget.photos[widget.index].check = value!;
+        setState(()  {
+          widget.check = value!;
+          /*if(value1 == true)
+        {
+          isChecked != value!;
+        }else{
+            isChecked = value!;
+          }*/
         });
       },
     );
   }
 
-  bool Control(int index) {
-    bool value = false;
-      for (int j = 0; j < widget.interessi.length; j++) {
-        if (widget.photos[index].nome == widget.interessi[j].nome) {
-          widget.photos[index].check = true;
-        }
-     value = widget.photos[index].check;
-    }
-    return value;
-  }
+
+
+
 }
 
