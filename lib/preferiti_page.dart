@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -10,10 +13,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//interessi
 Future<List<Photo>> fetchPhotos(http.Client client) async {
+  //comunicazione con api
   final response = await client
       .get(Uri.parse('http://192.168.1.241:9250/api/interessi'));
-  print(response.body);
   // Use the compute function to run parsePhotos in a separate isolate.
   return compute(parsePhotos, response.body);
 }
@@ -21,31 +26,33 @@ Future<List<Photo>> fetchPhotos(http.Client client) async {
 // A function that converts a response body into a List<Photo>.
 List<Photo> parsePhotos(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-
   return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
 }
 
 class Photo {
-  final String id;
-  final String name;
+    String id;
+    String name;
+    bool check = false;
 
-  const Photo({
+    Photo({
     required this.id,
     required this.name,
+    required this.check
   });
 
   factory Photo.fromJson(Map<String, dynamic> json) {
     return Photo(
       id: json['id'] as String,
       name: json['name'] as String,
+      check : false
     );
   }
 }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//padiglioni
 Future<List<Photo1>> fetchPhotos1(http.Client client1) async {
   final response1 = await client1
       .get(Uri.parse('http://192.168.1.241:9250/api/padiglioni'));
-  print(response1.body);
   // Use the compute function to run parsePhotos in a separate isolate.
   return compute(parsePhotos1, response1.body);
 }
@@ -53,23 +60,20 @@ Future<List<Photo1>> fetchPhotos1(http.Client client1) async {
 // A function that converts a response body into a List<Photo>.
 List<Photo1> parsePhotos1(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-
   return parsed.map<Photo1>((json) => Photo1.fromJson(json)).toList();
 }
 
 class Photo1 {
   final String id;
   final String nome;
-  //final String descrizione;
   final String area;
-  //final String immagine;
+  bool check = false;
 
-  const Photo1( {
-    //required this.immagine,
-    //required this.descrizione,
+   Photo1( {
     required this.area,
     required this.id,
     required this.nome,
+    required this.check
   });
 
   factory Photo1.fromJson(Map<String, dynamic> json) {
@@ -77,12 +81,12 @@ class Photo1 {
       id: json['id'] as String,
       nome: json['nome'] as String,
       area: json['area'] as String,
-      //immagine: json['immagine'] as String,
-      //descrizione: json['descrizione'] as String,
+      check: false
     );
   }
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//parte degli interessi
 class Preferiti extends StatefulWidget {
   const Preferiti({Key? key}) : super(key: key);
 
@@ -91,6 +95,7 @@ class Preferiti extends StatefulWidget {
 }
 
 class _PreferitiState extends State<Preferiti> {
+
 
   @override
   Widget build(BuildContext context) {
@@ -159,123 +164,231 @@ class _PreferitiState extends State<Preferiti> {
 
 class PhotosList extends StatelessWidget {
   PhotosList({Key? key, required this.photos}) : super(key: key);
-  bool isChecked = false;
+  bool check = false;
   final List<Photo> photos;
 
   @override
   Widget build(BuildContext context) {
-
-    return  ListView.builder(
+    ControlPhoto();
+    return ListView.builder(
       //padding: const EdgeInsets.all(8),
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       itemCount: photos.length,
       itemBuilder: (context, index) {
+        check = photos[index].check;
         return ListTile(
             title: Text(photos[index].name),
             leading: const Icon(Icons.circle),
-            trailing: const Box1()
+            trailing: Box1(photos: photos,
+                index: index,
+                check: check
+            )//getFetailfromFirestore(index, check)
         );
       },
     );
   }
+
+  ControlPhoto() async {
+    final _auth1 = FirebaseAuth.instance;
+    User? user = _auth1.currentUser;
+    DocumentSnapshot variable = await FirebaseFirestore.instance.collection(
+        'users').doc(user!.uid).get();
+
+    List<dynamic> interesse = variable['interessi'];
+    for (int j = 0; j < photos.length; j++) {
+      for (int i = 0; i < interesse.length; i++) {
+        if (photos[j].name == variable['interessi'][i]) {
+          photos[j].check = true;
+        }
+      }
+    }
+  }
+
 }
 
 class Box1 extends StatefulWidget {
-  const Box1({Key? key}) : super(key: key);
+  Box1({Key? key, required this.photos, required this.index, required this.check}) : super(key: key);
+  final List<Photo> photos;
+  final int index;
+  bool check;
 
   @override
   _BoxState1 createState() => _BoxState1();
 }
 
 class _BoxState1 extends State<Box1> {
-  bool isChecked = false;
+  DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child("users");
+  final _auth1 = FirebaseAuth.instance;
+
+
   @override
   Widget build(BuildContext context) {
     return Checkbox(
       activeColor: Colors.black,
-      value: isChecked,
+      value: widget.check,
       onChanged: (bool? value) {
         setState(() {
-          isChecked = value!;
+          widget.check = value!;
+          if (widget.check == true) {
+            postDetailToFirestore2();
+          }else{
+            removeDetailtofirestore3();
+          }
         });
       },
     );
   }
-}
 
+  postDetailToFirestore2() async {
+    FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
+    User? user = _auth1.currentUser;
+
+    await firebaseFirestore1
+        .collection("users")
+        .doc(user!.uid)
+        .update({
+      'interessi': FieldValue.arrayUnion([widget.photos[widget.index].name])
+    });
+
+  }
+  removeDetailtofirestore3() async {
+    FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
+    User? user = _auth1.currentUser;
+
+    await firebaseFirestore1
+        .collection("users")
+        .doc(user!.uid)
+        .update({
+      'interessi': FieldValue.arrayRemove([widget.photos[widget.index].name])
+    });
+
+  }
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//parte dei padiglioni
 class Photolist2 extends StatelessWidget {
   Photolist2({Key? key, required this.photos1}) : super(key: key);
-  bool isChecked = false;
+  bool check = false;
   final List<Photo1> photos1;
 
 
   @override
   Widget build(BuildContext context) {
-    return Container( child:
-    GridView.count(
+    ControlPhoto();
+    return ListView.builder(
+        scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        crossAxisCount: 2,
-        primary: false,
-        children:
-        List.generate(27, (index)
-        {
-          return
-            Card(
+        itemCount: photos1.length,
+        itemBuilder: (context, index) {
+          check = photos1[index].check;
+          return Card(
                 child:
-                Column(
+                 Column(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children:<Widget> [
-                      Expanded(
-                        child:
-                      Stack( children: [
-                        Container(//padding : const EdgeInsets.only(bottom: 5.00),
-                          child:
-                          Image.asset('assets/images/padiglione-francia-expo.jpg'),
-                        ),
-                        Container(
-                            alignment: Alignment.topRight,
-                            child: const Box()),
-                      ]
-                      )
-                      ),
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                          Stack(children: [
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              child:
+                              Image.asset(
+                                  'assets/images/padiglione-francia-expo.jpg'),
+                            ),
+                            Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.topRight,
+                                child: Box(photos1: photos1,
+                                    index: index,
+                                    check: photos1[index].check)),
+                          ]
+                          ),
                       ListTile(
-                        //leading: const Box(),
-                        title: Text(photos1[index].nome, overflow: TextOverflow.ellipsis,maxLines: 1),
+                        title: Text(photos1[index].nome, overflow: TextOverflow.ellipsis, maxLines: 1),
                       )
                     ]
                 )
             );
         }
-        )
-    )
     );
   }
+
+    ControlPhoto() async {
+      final _auth1 = FirebaseAuth.instance;
+      User? user = _auth1.currentUser;
+      DocumentSnapshot variable = await FirebaseFirestore.instance.collection(
+          'users').doc(user!.uid).get();
+
+      List<dynamic> interesse = variable['padiglioni'];
+      for (int j = 0; j < photos1.length; j++) {
+        for (int i = 0; i < interesse.length; i++) {
+          if (photos1[j].nome == variable['padiglioni'][i]) {
+            photos1[j].check = true;
+            print(photos1[j].nome);
+            print(photos1[j].check);
+          }
+        }
+      }
+    }
 }
 
 class Box extends StatefulWidget {
-  const Box({Key? key}) : super(key: key);
+  Box({Key? key, required this.photos1, required this.index, required this.check}) : super(key: key);
+  final List<Photo1> photos1;
+  final int index;
+  bool check;
 
   @override
   _BoxState createState() => _BoxState();
 }
 
 class _BoxState extends State<Box> {
-  bool isChecked = false;
+  DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child("users");
+  final _auth1 = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Checkbox(
       shape: const CircleBorder(),
       activeColor: Colors.black,
-      value: isChecked,
+      value: widget.check,
       onChanged: (bool? value) {
-        setState(() {
-          isChecked = value!;
+        setState(()  {
+          widget.check = value!;
+          if(widget.check == true) {
+            postDetailToFirestore1();
+          }else{
+            removeDetailtofirestore();
+          }
         });
       },
     );
   }
+
+  postDetailToFirestore1() async {
+    FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
+    User? user = _auth1.currentUser;
+
+    await firebaseFirestore1
+        .collection("users")
+        .doc(user!.uid)
+        .update({
+      'padiglioni': FieldValue.arrayUnion([widget.photos1[widget.index].nome])
+    });
+
+  }
+  removeDetailtofirestore() async {
+    FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
+    User? user = _auth1.currentUser;
+
+    await firebaseFirestore1
+        .collection("users")
+        .doc(user!.uid)
+        .update({
+      'padiglioni': FieldValue.arrayRemove([widget.photos1[widget.index].nome])
+    });
+
+  }
+
 }
 
 class Temi extends StatelessWidget {
@@ -356,3 +469,4 @@ class Pad extends StatelessWidget {
     ));
   }
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////

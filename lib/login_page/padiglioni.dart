@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:cdt/login_page/preferiti.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -8,7 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../switchh.dart';
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Future<List<Photo>> fetchPhotos(http.Client client) async {
   final response = await client
       .get(Uri.parse('http://192.168.1.241:9250/api/padiglioni'));
@@ -46,13 +47,12 @@ class Photo {
     );
   }
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Future<List<Interessi>> fetchPreferiti(http.Client client) async {
   //Comunicazione con firebase
   final _auth1 = FirebaseAuth.instance;
   User? user = _auth1.currentUser;
-  DocumentSnapshot variable = await FirebaseFirestore.instance.collection('uid').doc(user!.uid).get();
-  //print(variable['interessi']);
+  DocumentSnapshot variable = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
   String totale ='';
   List<dynamic> interesse =  variable['interessi'];
    for(int i=0; i<interesse.length; i++){
@@ -67,8 +67,6 @@ Future<List<Interessi>> fetchPreferiti(http.Client client) async {
   // Use the compute function to run parsePhotos in a separate isolate.
   return compute(parsePreferiti, response1.body);
 }
-
-
 
 
 // A function that converts a response body into a List<Interessi>.
@@ -116,7 +114,6 @@ class _PadiglioniRegistrazioneState extends State<PadiglioniRegistrazione> {
       Scaffold(
           body: Column(
               children: <Widget>[
-
                 Container(
                   padding: const EdgeInsets.only(
                       top: 80.00, right: 10.00, left: 10.00),
@@ -157,6 +154,24 @@ class _PadiglioniRegistrazioneState extends State<PadiglioniRegistrazione> {
                     ),
                   ),
                 ),
+                Row(
+                  children: <Widget>[
+                    Container(
+                      margin: const EdgeInsets.only(left: 20,right: 170),
+                      padding: const EdgeInsets.only(bottom: 30.00),
+                      child:
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.black,
+                          onPrimary: Colors.white,
+                        ),
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (contex) => const PreferitiRegistrazione()));
+                        },
+                        child: const Text('INDIETRO'),
+                      ),
+                    ),
                 Container(
                   padding: const EdgeInsets.only(bottom: 30.00),
                   child:
@@ -171,6 +186,8 @@ class _PadiglioniRegistrazioneState extends State<PadiglioniRegistrazione> {
                     },
                     child: const Text('AVANTI'),
                   ),
+                ),
+                ]
                 )
               ]
           )
@@ -222,7 +239,7 @@ class PreferList extends StatelessWidget {
         crossAxisCount: 2,
         primary: false,
         children:
-        List.generate(27, (index) {
+        List.generate(photos.length, (index) {
           return
             Card(
                 child:
@@ -283,9 +300,15 @@ class Box extends StatefulWidget {
 }
 
 class _BoxState extends State<Box> {
-
+  DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child("users");
+  final _auth1 = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
+    if(widget.check == true) {
+      postDetailToFirestore1();
+    }else{
+      removeDetailtofirestore();
+    }
     return Checkbox(
       shape: const CircleBorder(),
       activeColor: Colors.black,
@@ -293,19 +316,35 @@ class _BoxState extends State<Box> {
       onChanged: (bool? value) {
         setState(()  {
           widget.check = value!;
-          /*if(value1 == true)
-        {
-          isChecked != value!;
-        }else{
-            isChecked = value!;
-          }*/
         });
       },
     );
   }
 
+ postDetailToFirestore1() async {
+    FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
+    User? user = _auth1.currentUser;
 
+    await firebaseFirestore1
+        .collection("users")
+        .doc(user!.uid)
+        .update({
+      'padiglioni': FieldValue.arrayUnion([widget.photos[widget.index].nome])
+    });
 
+  }
+  removeDetailtofirestore() async {
+    FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
+    User? user = _auth1.currentUser;
+
+    await firebaseFirestore1
+        .collection("users")
+        .doc(user!.uid)
+        .update({
+      'padiglioni': FieldValue.arrayRemove([widget.photos[widget.index].nome])
+    });
+
+  }
 
 }
 

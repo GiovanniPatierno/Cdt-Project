@@ -197,7 +197,6 @@ class PhotosList extends StatelessWidget {
 
 class Box extends StatefulWidget {
    const Box({Key? key, required this.photos, required this.index}) : super(key: key);
-
   final List<Photo> photos;
   final int index;
 
@@ -207,9 +206,8 @@ class Box extends StatefulWidget {
 
 class _BoxState extends State<Box> {
   bool isChecked = false;
-  DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child("uid");
+  DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child("users");
   final _auth1 = FirebaseAuth.instance;
-
 
   @override
   Widget build(BuildContext context) {
@@ -219,34 +217,34 @@ class _BoxState extends State<Box> {
       onChanged: (bool? value) {
         setState(() {
           isChecked = value!;
-          if (isChecked == true) {
-            postDetailToFirestore1();
+         if (isChecked == true) {
+            postDetailToFirestore2();
           }else{
-            removeDetailtofirestore();
+            removeDetailtofirestore3();
           }
         });
       },
     );
   }
 
-  postDetailToFirestore1() async {
+  postDetailToFirestore2() async {
     FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
     User? user = _auth1.currentUser;
 
     await firebaseFirestore1
-        .collection("uid")
+        .collection("users")
         .doc(user!.uid)
         .update({
       'interessi': FieldValue.arrayUnion([widget.photos[widget.index].name])
     });
 
   }
-  removeDetailtofirestore() async {
+  removeDetailtofirestore3() async {
     FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
     User? user = _auth1.currentUser;
 
     await firebaseFirestore1
-        .collection("uid")
+        .collection("users")
         .doc(user!.uid)
         .update({
       'interessi': FieldValue.arrayRemove([widget.photos[widget.index].name])
