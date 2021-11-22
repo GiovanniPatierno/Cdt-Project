@@ -26,16 +26,19 @@ List<Photo> parsePhotos(String responseBody) {
 class Photo {
   final String id;
   final String name;
+  bool check = false;
 
-  const Photo({
+  Photo({
     required this.id,
     required this.name,
+    required this.check
   });
 
   factory Photo.fromJson(Map<String, dynamic> json) {
     return Photo(
       id: json['id'] as String,
       name: json['name'] as String,
+        check : false
     );
   }
 }
@@ -170,35 +173,52 @@ class _PreferitiRegistrazioneState extends State<PreferitiRegistrazione> {
 
 class PhotosList extends StatelessWidget {
   PhotosList({Key? key, required this.photos}) : super(key: key);
-  bool isChecked = false;
+  bool check = false;
   final List<Photo> photos;
 
 
   @override
   Widget build(BuildContext context) {
-
+    ControlPhoto();
    return  ListView.builder(
      padding: const EdgeInsets.all(8),
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       itemCount: photos.length,
       itemBuilder: (context, index) {
+        check = photos[index].check;
         return ListTile(
           title: Text(photos[index].name),
           leading: const Icon(Icons.circle),
-          trailing: Box(photos: photos, index: index)
+          trailing: Box(photos: photos, index: index, check: photos[index].check)
         );
       },
     );
   }
 
+  ControlPhoto() async {
+    final _auth1 = FirebaseAuth.instance;
+    User? user = _auth1.currentUser;
+    DocumentSnapshot variable = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+
+    List<dynamic> interesse = variable['interessi'];
+    print(variable['interessi']);
+    for (int j = 0; j < photos.length; j++) {
+      for (int i = 0; i < interesse.length; i++) {
+        if (photos[j].name == variable['interessi'][i]) {
+          photos[j].check = true;
+        }
+      }
+    }
+  }
 }
 
 
 class Box extends StatefulWidget {
-   const Box({Key? key, required this.photos, required this.index}) : super(key: key);
+   Box({Key? key, required this.photos, required this.index, required this.check}) : super(key: key);
   final List<Photo> photos;
   final int index;
+   bool check;
 
   @override
   _BoxState createState() => _BoxState();
@@ -213,11 +233,11 @@ class _BoxState extends State<Box> {
   Widget build(BuildContext context) {
     return Checkbox(
       activeColor: Colors.black,
-      value: isChecked,
+      value: widget.check,
       onChanged: (bool? value) {
         setState(() {
-          isChecked = value!;
-         if (isChecked == true) {
+          widget.check = value!;
+         if (widget.check == true) {
             postDetailToFirestore2();
           }else{
             removeDetailtofirestore3();

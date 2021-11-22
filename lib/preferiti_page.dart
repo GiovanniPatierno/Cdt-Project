@@ -121,6 +121,7 @@ class _PreferitiState extends State<Preferiti> {
                       child: Text('An error has occurred!'),
                     );
                   } else if (snapshot.hasData) {
+                    ControlPhoto1(snapshot);
                     return PhotosList(photos: snapshot.data!);
                   } else {
                     return const Center(
@@ -145,6 +146,7 @@ class _PreferitiState extends State<Preferiti> {
                       child: Text('An error has occurred!'),
                     );
                   } else if (snapshot.hasData) {
+                    ControlPhoto(snapshot);
                     return Photolist2(photos1: snapshot.data!);
                   } else {
                     return const Center(
@@ -160,51 +162,63 @@ class _PreferitiState extends State<Preferiti> {
       )
     );
   }
-}
+  ControlPhoto(AsyncSnapshot<List<Photo1>> snapshot) async {
+    final _auth1 = FirebaseAuth.instance;
+    User? user = _auth1.currentUser;
+    DocumentSnapshot variable = await FirebaseFirestore.instance.collection(
+        'users').doc(user!.uid).get();
 
-class PhotosList extends StatelessWidget {
-  PhotosList({Key? key, required this.photos}) : super(key: key);
-  bool check = false;
-  final List<Photo> photos;
-
-  @override
-  Widget build(BuildContext context) {
-    ControlPhoto();
-    return ListView.builder(
-      //padding: const EdgeInsets.all(8),
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      itemCount: photos.length,
-      itemBuilder: (context, index) {
-        check = photos[index].check;
-        return ListTile(
-            title: Text(photos[index].name),
-            leading: const Icon(Icons.circle),
-            trailing: Box1(photos: photos,
-                index: index,
-                check: check
-            )//getFetailfromFirestore(index, check)
-        );
-      },
-    );
+    List<dynamic> interesse = variable['padiglioni'];
+    for (int j = 0; j < snapshot.data!.length; j++) {
+      for (int i = 0; i < interesse.length; i++) {
+        if (snapshot.data![j].nome == variable['padiglioni'][i]) {
+          snapshot.data![j].check = true;
+        }
+      }
+    }
   }
 
-  ControlPhoto() async {
+  ControlPhoto1(AsyncSnapshot<List<Photo>> snapshot) async {
     final _auth1 = FirebaseAuth.instance;
     User? user = _auth1.currentUser;
     DocumentSnapshot variable = await FirebaseFirestore.instance.collection(
         'users').doc(user!.uid).get();
 
     List<dynamic> interesse = variable['interessi'];
-    for (int j = 0; j < photos.length; j++) {
+    for (int j = 0; j < snapshot.data!.length; j++) {
       for (int i = 0; i < interesse.length; i++) {
-        if (photos[j].name == variable['interessi'][i]) {
-          photos[j].check = true;
+        if (snapshot.data![j].name == variable['interessi'][i]) {
+          snapshot.data![j].check = true;
         }
       }
     }
   }
+}
 
+class PhotosList extends StatelessWidget {
+  PhotosList({Key? key, required this.photos}) : super(key: key);
+  final List<Photo> photos;
+
+  @override
+  Widget build(BuildContext context) {
+   // ControlPhoto();
+    return ListView.builder(
+      //padding: const EdgeInsets.all(8),
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemCount: photos.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+            title: Text(photos[index].name),
+            leading: const Icon(Icons.circle),
+            trailing: Box1(photos: photos,
+                index: index,
+                check: photos[index].check
+            )//getFetailfromFirestore(index, check)
+        );
+      },
+    );
+  }
 }
 
 class Box1 extends StatefulWidget {
@@ -269,19 +283,16 @@ class _BoxState1 extends State<Box1> {
 //parte dei padiglioni
 class Photolist2 extends StatelessWidget {
   Photolist2({Key? key, required this.photos1}) : super(key: key);
-  bool check = false;
   final List<Photo1> photos1;
 
 
   @override
   Widget build(BuildContext context) {
-    ControlPhoto();
     return ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         itemCount: photos1.length,
         itemBuilder: (context, index) {
-          check = photos1[index].check;
           return Card(
                 child:
                  Column(
@@ -313,23 +324,6 @@ class Photolist2 extends StatelessWidget {
     );
   }
 
-    ControlPhoto() async {
-      final _auth1 = FirebaseAuth.instance;
-      User? user = _auth1.currentUser;
-      DocumentSnapshot variable = await FirebaseFirestore.instance.collection(
-          'users').doc(user!.uid).get();
-
-      List<dynamic> interesse = variable['padiglioni'];
-      for (int j = 0; j < photos1.length; j++) {
-        for (int i = 0; i < interesse.length; i++) {
-          if (photos1[j].nome == variable['padiglioni'][i]) {
-            photos1[j].check = true;
-            print(photos1[j].nome);
-            print(photos1[j].check);
-          }
-        }
-      }
-    }
 }
 
 class Box extends StatefulWidget {
