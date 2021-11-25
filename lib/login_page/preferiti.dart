@@ -186,11 +186,7 @@ class PhotosList extends StatelessWidget {
       shrinkWrap: true,
       itemCount: photos.length,
       itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(photos[index].name),
-          leading: const Icon(Icons.circle),
-          trailing: Box(photos: photos, index: index, check: photos[index].check)
-        );
+        return Box1(photos: photos, index: index, check: photos[index].check);
       },
     );
   }
@@ -213,36 +209,39 @@ class PhotosList extends StatelessWidget {
 }
 
 
-class Box extends StatefulWidget {
-   Box({Key? key, required this.photos, required this.index, required this.check}) : super(key: key);
+class Box1 extends StatefulWidget {
+  Box1({Key? key, required this.photos, required this.index, required this.check}) : super(key: key);
   final List<Photo> photos;
   final int index;
-   bool check;
+  bool check;
 
   @override
-  _BoxState createState() => _BoxState();
+  _BoxState1 createState() => _BoxState1();
 }
 
-class _BoxState extends State<Box> {
-  bool isChecked = false;
+class _BoxState1 extends State<Box1> {
   DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child("users");
   final _auth1 = FirebaseAuth.instance;
 
+
   @override
   Widget build(BuildContext context) {
-    return Checkbox(
-      activeColor: Colors.black,
-      value: widget.check,
-      onChanged: (bool? value) {
-        setState(() {
-          widget.check = value!;
-         if (widget.check == true) {
-            postDetailToFirestore2();
-          }else{
-            removeDetailtofirestore3();
-          }
-        });
-      },
+    return CheckboxListTile(
+        title: Text(widget.photos[widget.index].name),
+        secondary: const Icon(Icons.circle),
+        controlAffinity: ListTileControlAffinity.platform,
+        value: widget.photos[widget.index].check,
+        onChanged: (bool? value) {
+          setState(() {
+            widget.photos[widget.index].check = value!;
+            if (widget.photos[widget.index].check == true) {
+              postDetailToFirestore2();
+            } else {
+              removeDetailtofirestore3();
+            }
+          });
+        },
+        activeColor: Colors.black
     );
   }
 
@@ -271,7 +270,6 @@ class _BoxState extends State<Box> {
 
   }
 }
-
 
 
 

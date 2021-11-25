@@ -188,6 +188,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.14.0"
+  flutter_map_tappable_polyline:
+    dependency: "direct main"
+    description:
+      name: flutter_map_tappable_polyline
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -476,6 +483,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  syncfusion_flutter_core:
+    dependency: transitive
+    description:
+      name: syncfusion_flutter_core
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "19.3.55"
+  syncfusion_flutter_maps:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_maps
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "19.3.55-beta"
   term_glyph:
     dependency: transitive
     description:

@@ -157,27 +157,13 @@ class _MapState extends State<Map1> {
 class Lists extends StatelessWidget {
   Lists({Key? key, required this.data}) : super(key: key);
   List<Padiglioni> data;
+  int index = 0;
 
-  var points = <latLng.LatLng> [
-     //latLng.LatLng(41.1355051, 16.8378362),
-     //latLng.LatLng(41.1354901, 16.8384183),
-     //latLng.LatLng(41.1346975, 16.8383944),
-     //latLng.LatLng(41.1347136,16.837804),
-     //latLng.LatLng(41.1355051, 16.8378362)
-   ];
+  var points = <latLng.LatLng>[];
+
 
   @override
   Widget build(BuildContext context) {
-   // var points;
-    //List points  = <latLng.LatLng>[];
-    /*  for(int i = 0; i < data.length; i++){
-      for(int j = 0; j < data[i].geometry!.coordinates!.length; j++){
-        var points = <latLng.LatLng> [ latLng.LatLng(data[i].geometry!.coordinates![j][0], data[i].geometry!.coordinates![j][0]) ];
-        print(points);
-        //print(data[i].geometry!.coordinates![j][0]);
-      }
-    }*/
-    //print(data[1].geometry!.coordinates![3]);
     return Scaffold(
         appBar: AppBar(
           title: const Text('Map'),
@@ -206,14 +192,14 @@ class Lists extends StatelessWidget {
                   height: 80.0,
                   point: latLng.LatLng(41.136423, 16.838197),
                   builder: (ctx) =>
-                  const FlutterLogo(),
+                  const Icon( Icons.person),
                 ),
               ],
             ),
             PolylineLayerOptions(
                 polylines: [ Polyline(
-                    points: points,
-                    strokeWidth: 1.0,
+                    points: points = CratorPoints(6),
+                    strokeWidth: 2.0,
                     color: Colors.white
                 )
                 ]
@@ -223,6 +209,17 @@ class Lists extends StatelessWidget {
     );
   }
 
+  List<latLng.LatLng> CratorPoints (int index){
+           var points = <latLng.LatLng>[];
+           for(int j = 0; j < data[index].geometry!.coordinates!.length; j++) {
+             points.add(latLng.LatLng(data[index].geometry!.coordinates![j][1],
+                 data[index].geometry!.coordinates![j][0]));
+
+           }
+
+     print(points);
+     return points;
+  }
 
 }
 

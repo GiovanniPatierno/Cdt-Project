@@ -198,30 +198,50 @@ class _PreferitiState extends State<Preferiti> {
 class PhotosList extends StatelessWidget {
   PhotosList({Key? key, required this.photos}) : super(key: key);
   final List<Photo> photos;
+  DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child(
+      "users");
+  final _auth1 = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
-   // ControlPhoto();
+    // ControlPhoto();
     return ListView.builder(
       //padding: const EdgeInsets.all(8),
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      itemCount: photos.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-            title: Text(photos[index].name),
-            leading: const Icon(Icons.circle),
-            trailing: Box1(photos: photos,
-                index: index,
-                check: photos[index].check
-            )//getFetailfromFirestore(index, check)
-        );
-      },
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        itemCount: photos.length,
+        itemBuilder: (context, index) {
+          return Box1(photos: photos, index: index, check: photos[index].check);
+        } //getFetailfromFirestore(index, check)
     );
+  }
+
+  postDetailToFirestore2(int index) async {
+    FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
+    User? user = _auth1.currentUser;
+
+    await firebaseFirestore1
+        .collection("users")
+        .doc(user!.uid)
+        .update({
+      'interessi': FieldValue.arrayUnion([photos[index].name])
+    });
+  }
+
+  removeDetailtofirestore3(int index) async {
+    FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
+    User? user = _auth1.currentUser;
+
+    await firebaseFirestore1
+        .collection("users")
+        .doc(user!.uid)
+        .update({
+      'interessi': FieldValue.arrayRemove([photos[index].name])
+    });
   }
 }
 
-class Box1 extends StatefulWidget {
+  class Box1 extends StatefulWidget {
   Box1({Key? key, required this.photos, required this.index, required this.check}) : super(key: key);
   final List<Photo> photos;
   final int index;
@@ -229,56 +249,60 @@ class Box1 extends StatefulWidget {
 
   @override
   _BoxState1 createState() => _BoxState1();
-}
+  }
 
-class _BoxState1 extends State<Box1> {
+  class _BoxState1 extends State<Box1> {
   DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child("users");
   final _auth1 = FirebaseAuth.instance;
 
 
   @override
   Widget build(BuildContext context) {
-    return Checkbox(
-      activeColor: Colors.black,
-      value: widget.check,
-      onChanged: (bool? value) {
-        setState(() {
-          widget.check = value!;
-          if (widget.check == true) {
-            postDetailToFirestore2();
-          }else{
-            removeDetailtofirestore3();
-          }
-        });
-      },
+    return CheckboxListTile(
+        title: Text(widget.photos[widget.index].name),
+        secondary: const Icon(Icons.circle),
+        controlAffinity: ListTileControlAffinity.platform,
+        value: widget.photos[widget.index].check,
+        onChanged: (bool? value) {
+          setState(() {
+            widget.photos[widget.index].check = value!;
+            if (widget.photos[widget.index].check == true) {
+              postDetailToFirestore2();
+            } else {
+              removeDetailtofirestore3();
+            }
+          });
+        },
+        activeColor: Colors.black
     );
   }
 
   postDetailToFirestore2() async {
-    FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
-    User? user = _auth1.currentUser;
+  FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
+  User? user = _auth1.currentUser;
 
-    await firebaseFirestore1
-        .collection("users")
-        .doc(user!.uid)
-        .update({
-      'interessi': FieldValue.arrayUnion([widget.photos[widget.index].name])
-    });
+  await firebaseFirestore1
+      .collection("users")
+      .doc(user!.uid)
+      .update({
+  'interessi': FieldValue.arrayUnion([widget.photos[widget.index].name])
+  });
 
   }
   removeDetailtofirestore3() async {
-    FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
-    User? user = _auth1.currentUser;
+  FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
+  User? user = _auth1.currentUser;
 
-    await firebaseFirestore1
-        .collection("users")
-        .doc(user!.uid)
-        .update({
-      'interessi': FieldValue.arrayRemove([widget.photos[widget.index].name])
-    });
+  await firebaseFirestore1
+      .collection("users")
+      .doc(user!.uid)
+      .update({
+  'interessi': FieldValue.arrayRemove([widget.photos[widget.index].name])
+  });
 
   }
-}
+  }
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //parte dei padiglioni
 class Photolist2 extends StatelessWidget {
