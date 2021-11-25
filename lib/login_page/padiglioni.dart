@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:ffi';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:cdt/login_page/preferiti.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,40 +12,43 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../switchh.dart';
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Future<List<Photo>> fetchPhotos(http.Client client) async {
+Future<List<Padiglioni>> fetchPadiglioni(http.Client client) async {
   final response = await client
       .get(Uri.parse('http://192.168.1.241:9250/api/padiglioni'));
   // Use the compute function to run parsePhotos in a separate isolate.
-  return compute(parsePhotos, response.body);
+  return compute(parsePadiglioni, response.body);
 }
 
 // A function that converts a response body into a List<Photo>.
-List<Photo> parsePhotos(String responseBody) {
+List<Padiglioni> parsePadiglioni(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-  return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
+  return parsed.map<Padiglioni>((json) => Padiglioni.fromJson(json)).toList();
 }
 
-class Photo {
+class Padiglioni {
   final String id;
   final String nome;
   final String area;
   bool check = false;
 
 
-   Photo( {
+
+   Padiglioni( {
     required this.area,
     required this.id,
     required this.nome,
-    required this.check
+    required this.check,
+
 
   });
 
-  factory Photo.fromJson(Map<String, dynamic> json) {
-    return Photo(
-      id: json['id'] as String,
-      nome: json['nome'] as String,
-      area: json['area'] as String,
-      check: false,
+  factory Padiglioni.fromJson(Map<String, dynamic> json) {
+    return Padiglioni(
+        id: json['id'] as String,
+        nome: json['nome'] as String,
+        area: json['area'] as String,
+        check: false,
+
     );
   }
 }
@@ -80,7 +85,8 @@ class Interessi {
   final String nome;
   final String area;
 
-  const Interessi( {
+
+   Interessi( {
     required this.area,
     required this.id,
     required this.nome,
@@ -93,8 +99,19 @@ class Interessi {
       id: json['id'] as String,
       nome: json['nome'] as String,
       area: json['area'] as String,
+
     );
   }
+}
+
+class Cordinate {
+  double lon;
+  double lat;
+
+   Cordinate({
+    required this.lon,
+     required this.lat
+});
 }
 
 
@@ -136,8 +153,8 @@ class _PadiglioniRegistrazioneState extends State<PadiglioniRegistrazione> {
                   Container(
                     padding: const EdgeInsets.only(top: 10.00, bottom: 40.00),
                     child:
-                    FutureBuilder<List<Photo>>(
-                      future: fetchPhotos(http.Client()),
+                    FutureBuilder<List<Padiglioni>>(
+                      future: fetchPadiglioni(http.Client()),
                       builder: (context, snapshot) {
                         if (snapshot.hasError) {
                           return const Center(
@@ -196,7 +213,7 @@ class _PadiglioniRegistrazioneState extends State<PadiglioniRegistrazione> {
 
 class Photolist2 extends StatelessWidget {
   Photolist2({Key? key, required this.photos, required this.check}) : super(key: key);
-  final List<Photo> photos;
+  final List<Padiglioni> photos;
   bool check = false;
 
 
@@ -226,7 +243,7 @@ class Photolist2 extends StatelessWidget {
 class PreferList extends StatelessWidget {
   PreferList({Key? key,  required this.interessi, required this.photos, required this.check}) : super(key: key);
   final List<Interessi> interessi;
-  final List<Photo> photos;
+  final List<Padiglioni> photos;
   bool check = false;
 
 
@@ -290,7 +307,7 @@ class PreferList extends StatelessWidget {
 
 class Box extends StatefulWidget {
   Box({Key? key,required this.interessi, required this.photos, required this.index, required this.check}) : super(key: key);
-  final List<Photo> photos;
+  final List<Padiglioni> photos;
   final List<Interessi> interessi;
   final int index;
   bool check = false;

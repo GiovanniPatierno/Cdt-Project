@@ -5,15 +5,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class Padiglioni extends StatefulWidget {
-  const Padiglioni({Key? key}) : super(key: key);
+class Padiglioni11 extends StatefulWidget {
+  const Padiglioni11({Key? key}) : super(key: key);
 
   @override
   _PadiglioniState createState() => _PadiglioniState();
 }
 
-class _PadiglioniState extends State<Padiglioni> {
-  TextEditingController searchController = new TextEditingController();
+class _PadiglioniState extends State<Padiglioni11> {
+  TextEditingController searchController = TextEditingController();
 
 
 
@@ -131,7 +131,6 @@ class Photolist2 extends StatelessWidget {
 Future<List<Photo>> fetchPhotos(http.Client client) async {
   final response = await client
       .get(Uri.parse('http://192.168.1.241:9250/api/padiglioni'));
-  print(response.body);
   // Use the compute function to run parsePhotos in a separate isolate.
   return compute(parsePhotos, response.body);
 }
@@ -139,7 +138,6 @@ Future<List<Photo>> fetchPhotos(http.Client client) async {
 // A function that converts a response body into a List<Photo>.
 List<Photo> parsePhotos(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-
   return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
 }
 
@@ -167,4 +165,6 @@ class Photo {
       //descrizione: json['descrizione'] as String,
     );
   }
+
+
 }

@@ -26,7 +26,7 @@ List<Photo> parsePhotos(String responseBody) {
 class Photo {
   final String id;
   final String name;
-  bool check = false;
+  bool check;
 
   Photo({
     required this.id,
@@ -36,8 +36,8 @@ class Photo {
 
   factory Photo.fromJson(Map<String, dynamic> json) {
     return Photo(
-      id: json['id'] as String,
-      name: json['name'] as String,
+        id: json['id'] as String,
+        name: json['name'] as String,
         check : false
     );
   }
@@ -173,20 +173,19 @@ class _PreferitiRegistrazioneState extends State<PreferitiRegistrazione> {
 
 class PhotosList extends StatelessWidget {
   PhotosList({Key? key, required this.photos}) : super(key: key);
-  bool check = false;
   final List<Photo> photos;
 
 
   @override
   Widget build(BuildContext context) {
     ControlPhoto();
+
    return  ListView.builder(
      padding: const EdgeInsets.all(8),
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       itemCount: photos.length,
       itemBuilder: (context, index) {
-        check = photos[index].check;
         return ListTile(
           title: Text(photos[index].name),
           leading: const Icon(Icons.circle),

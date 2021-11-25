@@ -46,6 +46,10 @@ dependencies:
   firebase_database: ^8.0.1
   http: ^0.13.4
   flutter_bloc: ^7.3.3
+  flutter_map: ^0.14.0
+  latlng: ^0.1.0
+  flutter_secure_storage: ^5.0.2
+  location: ^4.3.0
 
 
 

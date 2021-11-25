@@ -18,8 +18,8 @@ class SwitchState extends State<Switchh> {
 
   final screens =[
     const HomePage(),
-    const Padiglioni(),
-    const Map(),
+    const Padiglioni11(),
+    const Map1(),
     const Preferiti(),
     const Account(),
   ];
