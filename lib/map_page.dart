@@ -8,7 +8,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 import 'package:http/http.dart' as http;
 import 'dart:async';
-
+//import 'package:geolocator/geolocator.dart';
 
 Future<List<Padiglioni88>> fetchPadiglioni(http.Client client) async {
   final response = await client
@@ -168,10 +168,16 @@ class Lists extends StatelessWidget {
   Lists({Key? key, required this.data}) : super(key: key);
   final List<Padiglioni88> data;
   var points = <latLng.LatLng>[];
+  var locations = "";
+
 
   @override
   Widget build(BuildContext context) {
 
+    latLng.LatLng currentPostion;
+
+   // void getLocation() async { Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high); print(position); }
+   // getLocation();
    Color Colorrr(int i) {
      Color color = Colors.black38;
        if(data[i].check == true) {
@@ -181,14 +187,31 @@ class Lists extends StatelessWidget {
      return color;
    }
 
+
+    var markers = <Marker>[];
+    for(int i= 0; i<data.length; i++) {
+      markers.add(Marker(
+        width: 20.0,
+        height: 20.0,
+        point: latLng.LatLng(data[i].geometry!.coordinates![0][1],data[i].geometry!.coordinates![0][0]),
+        builder: (ctx) =>
+        Container(
+          width: 0.1,
+          height: 0.1,
+          decoration: BoxDecoration(color: Colors.white,
+            border: Border.all(color: Colors.black)
+        ),
+      )));
+    }
+
   var poli = <Polyline>[] ;
    for(int i= 0; i<data.length; i++) {
     poli.add(Polyline(
          points: points = CratorPoints(i),
-
-         strokeWidth: 3.0,
+         //strokeWidth: 15.00,
          color: Colorrr(i),
-         borderColor: Colorrr(i)
+         borderColor: Colorrr(i),
+        borderStrokeWidth: 0.5,
      ));
    }
 
@@ -200,8 +223,8 @@ class Lists extends StatelessWidget {
         ),
         body: FlutterMap(
           options: MapOptions(
-            center: latLng.LatLng(41.136423, 16.838197),
-            zoom: 13.0,
+            center:  latLng.LatLng(41.136423, 16.838197),
+            zoom: 20.0,
           ),
           layers: [
             TileLayerOptions(
@@ -215,7 +238,7 @@ class Lists extends StatelessWidget {
               },
             ),
             MarkerLayerOptions(
-              markers: [
+              markers:  [
                 Marker(
                   width: 50.0,
                   height: 50.0,
@@ -223,11 +246,15 @@ class Lists extends StatelessWidget {
                   builder: (ctx) =>
                   const Icon( Icons.person, color: Colors.black38),
                 ),
+
               ],
             ),
             PolylineLayerOptions(
                 polylines: poli
-            )
+            ),
+        MarkerLayerOptions(
+            markers: markers
+        )
           ],
         )
     );
@@ -247,6 +274,15 @@ class Lists extends StatelessWidget {
   }
 
 }
+/*class Position {
+  void _getUserLocation() async {
+    var position = await GeolocatorPlatform.instance
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      currentPostion = latLng.LatLng(position.latitude, position.longitude);
+    });
+  }
+}*/
 
 
 
