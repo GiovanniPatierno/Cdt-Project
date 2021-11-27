@@ -1,17 +1,16 @@
 import 'dart:convert';
-import 'dart:ffi';
-import 'package:cdt/padiglioni_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlng/latlng.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
 
-Future<List<Padiglioni>> fetchPadiglioni(http.Client client) async {
+Future<List<Padiglioni88>> fetchPadiglioni(http.Client client) async {
   final response = await client
       .get(Uri.parse('http://192.168.1.241:9250/api/padiglioni'));
   // Use the compute function to run parsePhotos in a separate isolate.
@@ -20,13 +19,13 @@ Future<List<Padiglioni>> fetchPadiglioni(http.Client client) async {
 }
 
 // A function that converts a response body into a List<Photo>.
-List<Padiglioni> parsePadiglioni(String responseBody) {
+List<Padiglioni88> parsePadiglioni(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-  return parsed.map<Padiglioni>((json) => Padiglioni.fromJson(json)).toList();
+  return parsed.map<Padiglioni88>((json) => Padiglioni88.fromJson(json)).toList();
 }
 
 
-class Padiglioni {
+class Padiglioni88 {
   String? id;
   String? nome;
   String? descrizione;
@@ -35,33 +34,36 @@ class Padiglioni {
   //Properties? properties;
   Geometry? geometry;
   List<Interessi>? interessi;
+  bool check = false;
 
-  Padiglioni({this.id, this.nome, this.descrizione, this.area, this.type, this.geometry});
 
-  Padiglioni.fromJson(Map<String, dynamic> json) {
-    this.id = json["id"];
-    this.nome = json["nome"];
-    this.descrizione = json["descrizione"];
-    this.area = json["area"];
-    this.type = json["type"];
-   // this.properties = json["properties"] == null ? null : Properties.fromJson(json["properties"]);
-    this.geometry = json["geometry"] == null ? null : Geometry.fromJson(json["geometry"]);
-    this.interessi = json["interessi"]==null ? null : (json["interessi"] as List).map((e)=>Interessi.fromJson(e)).toList();
+  Padiglioni88({this.id, this.nome, this.descrizione, this.area, this.type, this.geometry,   required this.check});
+
+  Padiglioni88.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
+    nome = json["nome"];
+    descrizione = json["descrizione"];
+    area = json["area"];
+    type = json["type"];
+    geometry = json["geometry"] == null ? null : Geometry.fromJson(json["geometry"]);
+    interessi = json["interessi"]==null ? null : (json["interessi"] as List).map((e)=>Interessi.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data["id"] = this.id;
-    data["nome"] = this.nome;
-    data["descrizione"] = this.descrizione;
-    data["area"] = this.area;
-    data["type"] = this.type;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["id"] = id;
+    data["nome"] = nome;
+    data["descrizione"] = descrizione;
+    data["area"] = area;
+    data["type"] = type;
    /* if(this.properties != null)
       data["properties"] = this.properties?.toJson();*/
-    if(this.geometry != null)
-      data["geometry"] = this.geometry?.toJson();
-    if(this.interessi != null)
-      data["interessi"] = this.interessi?.map((e)=>e.toJson()).toList();
+    if(geometry != null) {
+      data["geometry"] = geometry?.toJson();
+    }
+    if(interessi != null) {
+      data["interessi"] = interessi?.map((e)=>e.toJson()).toList();
+    }
     return data;
   }
 }
@@ -69,18 +71,16 @@ class Padiglioni {
 class Interessi {
   String? id;
   String? name;
-
   Interessi({this.id, this.name});
-
   Interessi.fromJson(Map<String, dynamic> json) {
-    this.id = json["id"];
-    this.name = json["name"];
+    id = json["id"];
+    name = json["name"];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data["id"] = this.id;
-    data["name"] = this.name;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["id"] = id;
+    data["name"] = name;
     return data;
   }
 }
@@ -92,29 +92,25 @@ class Geometry {
   Geometry({this.coordinates, this.type});
 
   Geometry.fromJson(Map<String, dynamic> json) {
-    this.coordinates = json["coordinates"]==null ? null : json["coordinates"][0];
-    this.type = json["type"];
+    coordinates = json["coordinates"]==null ? null : json["coordinates"][0];
+    type = json["type"];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if(this.coordinates != null)
-      data["coordinates"] = this.coordinates;
-    data["type"] = this.type;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if(coordinates != null) {
+      data["coordinates"] = coordinates;
+    }
+    data["type"] = type;
     return data;
   }
 }
 
 class Properties {
   Properties();
-
-  Properties.fromJson(Map<String, dynamic> json) {
-
-  }
-
+  Properties.fromJson(Map<String, dynamic> json);
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-
+    final Map<String, dynamic> data = <String, dynamic>{};
     return data;
   }
 }
@@ -129,19 +125,34 @@ class Map1 extends StatefulWidget {
   _MapState createState() => _MapState();
 }
 
-class _MapState extends State<Map1> {
+class _MapState extends State<Map1>  {
+  List list = [];
+
+
+
+
   @override
   Widget build(BuildContext context) {
-
-    return FutureBuilder<List<Padiglioni>>(
+    var firebaseUser =  FirebaseAuth.instance.currentUser;
+    FirebaseFirestore.instance.collection("users").doc(firebaseUser!.uid).get().then((value){
+      print(value.data()!['padiglioni']);
+      list = value.data()!['padiglioni'] as List;
+    });
+    return FutureBuilder<List<Padiglioni88>>(
       future: fetchPadiglioni(http.Client()),
       builder: (context, snapshot) {
-
         if (snapshot.hasError) {
           return const Center(
             child: Text('An error has occurred!'),
           );
         } else if (snapshot.hasData) {
+          for (int j = 0; j < snapshot.data!.length; j++) {
+            for (int i = 0; i < list.length; i++) {
+             if (snapshot.data![j].nome == list[i]) {
+                snapshot.data![j].check = true;
+              }
+            }
+          }
           return Lists(data: snapshot.data!);
         } else {
           return const Center(
@@ -150,20 +161,38 @@ class _MapState extends State<Map1> {
         }
       },
     );
-
-    }
   }
+}
 
 class Lists extends StatelessWidget {
   Lists({Key? key, required this.data}) : super(key: key);
-  List<Padiglioni> data;
-  int index = 0;
-
+  final List<Padiglioni88> data;
   var points = <latLng.LatLng>[];
-
 
   @override
   Widget build(BuildContext context) {
+
+   Color Colorrr(int i) {
+     Color color = Colors.black38;
+       if(data[i].check == true) {
+         color = Colors.green;
+
+     }
+     return color;
+   }
+
+  var poli = <Polyline>[] ;
+   for(int i= 0; i<data.length; i++) {
+    poli.add(Polyline(
+         points: points = CratorPoints(i),
+
+         strokeWidth: 3.0,
+         color: Colorrr(i),
+         borderColor: Colorrr(i)
+     ));
+   }
+
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Map'),
@@ -176,7 +205,7 @@ class Lists extends StatelessWidget {
           ),
           layers: [
             TileLayerOptions(
-              urlTemplate: "https://api.mapbox.com/styles/v1/patierno1/ckwatqb0b6g5115t6scccgw0q/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoicGF0aWVybm8xIiwiYSI6ImNrdWZhb3EyYjBnajkydnFlMmdnYXVqenEifQ.CF0aaxP46ecopgUdTrDmpA",
+              urlTemplate: "https://api.mapbox.com/styles/v1/patierno1/ckwg549m607ej15o9c4y8xphp/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoicGF0aWVybm8xIiwiYSI6ImNrdWZhb3EyYjBnajkydnFlMmdnYXVqenEifQ.CF0aaxP46ecopgUdTrDmpA",
               additionalOptions: {
                 'accessToken': 'pk.eyJ1IjoicGF0aWVybm8xIiwiYSI6ImNrdWZhb3EyYjBnajkydnFlMmdnYXVqenEifQ.CF0aaxP46ecopgUdTrDmpA',
                 'id': 'mapbox.mapbox-streets-v8'
@@ -188,38 +217,36 @@ class Lists extends StatelessWidget {
             MarkerLayerOptions(
               markers: [
                 Marker(
-                  width: 80.0,
-                  height: 80.0,
+                  width: 50.0,
+                  height: 50.0,
                   point: latLng.LatLng(41.136423, 16.838197),
                   builder: (ctx) =>
-                  const Icon( Icons.person),
+                  const Icon( Icons.person, color: Colors.black38),
                 ),
               ],
             ),
             PolylineLayerOptions(
-                polylines: [ Polyline(
-                    points: points = CratorPoints(6),
-                    strokeWidth: 2.0,
-                    color: Colors.white
-                )
-                ]
+                polylines: poli
             )
           ],
         )
     );
   }
 
+
+
+
   List<latLng.LatLng> CratorPoints (int index){
            var points = <latLng.LatLng>[];
            for(int j = 0; j < data[index].geometry!.coordinates!.length; j++) {
              points.add(latLng.LatLng(data[index].geometry!.coordinates![j][1],
                  data[index].geometry!.coordinates![j][0]));
-
            }
 
-     print(points);
      return points;
   }
 
 }
+
+
 

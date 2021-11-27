@@ -95,104 +95,102 @@ class Preferiti extends StatefulWidget {
 }
 
 class _PreferitiState extends State<Preferiti> {
-
+  List list = [];
+  List list1 = [];
 
   @override
   Widget build(BuildContext context) {
+
+    var firebaseUser = FirebaseAuth.instance.currentUser;
+    FirebaseFirestore.instance.collection("users").doc(firebaseUser!.uid)
+        .get()
+        .then((value) {
+      list = value.data()!['padiglioni'] as List;
+    });
+
+
+    FirebaseFirestore.instance.collection("users").doc(firebaseUser.uid)
+        .get()
+        .then((value1) {
+      list1 = value1.data()!['interessi'] as List;
+      print(list1);
+    });
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Preferiti'),
-        backgroundColor: Colors.black,
-      ),
-      body:Container( padding: EdgeInsets.all(20),
-          child: Column(
-        children: <Widget>[
-          const Temi(),
-          Expanded(
-            child:
-            Container(
-              padding: const EdgeInsets.all(5),
-              child:
-              FutureBuilder<List<Photo>>(
-                future: fetchPhotos(http.Client()),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('An error has occurred!'),
-                    );
-                  } else if (snapshot.hasData) {
-                    ControlPhoto1(snapshot);
-                    return PhotosList(photos: snapshot.data!);
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
-              ),
-            ),
-          ),
-          const Pad(),
-          Expanded(
-            child:
-            Container(
-              padding: const EdgeInsets.all(5),
-              child:
-              FutureBuilder<List<Photo1>>(
-                future: fetchPhotos1(http.Client()),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('An error has occurred!'),
-                    );
-                  } else if (snapshot.hasData) {
-                    ControlPhoto(snapshot);
-                    return Photolist2(photos1: snapshot.data!);
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
-              ),
-            ),
-          ),
-        ],
-      )
-      )
+        appBar: AppBar(
+          title: const Text('Preferiti'),
+          backgroundColor: Colors.black,
+        ),
+        body: Container(padding: EdgeInsets.all(20),
+            child: Column(
+              children: <Widget>[
+                const Temi(),
+                Expanded(
+                  child:
+                  Container(
+                    padding: const EdgeInsets.all(5),
+                    child:
+                    FutureBuilder<List<Photo>>(
+                      future: fetchPhotos(http.Client()),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return const Center(
+                            child: Text('An error has occurred!'),
+                          );
+                        } else if (snapshot.hasData) {
+                          for (int j = 0; j < snapshot.data!.length; j++) {
+                            for (int i = 0; i < list1.length; i++) {
+                              if (snapshot.data![j].name == list1[i]) {
+                                snapshot.data![j].check = true;
+                              }
+                            }
+                          }
+                          return PhotosList(photos: snapshot.data!);
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                const Pad(),
+                Expanded(
+                  child:
+                  Container(
+                    padding: const EdgeInsets.all(5),
+                    child:
+                    FutureBuilder<List<Photo1>>(
+                      future: fetchPhotos1(http.Client()),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return const Center(
+                            child: Text('An error has occurred!'),
+                          );
+                        } else if (snapshot.hasData) {
+                          for (int j = 0; j < snapshot.data!.length; j++) {
+                            for (int i = 0; i < list.length; i++) {
+                              if (snapshot.data![j].nome == list[i]) {
+                                snapshot.data![j].check = true;
+                              }
+                            }
+                          }
+                          return Photolist2(photos1: snapshot.data!);
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            )
+        )
     );
   }
-  ControlPhoto(AsyncSnapshot<List<Photo1>> snapshot) async {
-    final _auth1 = FirebaseAuth.instance;
-    User? user = _auth1.currentUser;
-    DocumentSnapshot variable = await FirebaseFirestore.instance.collection(
-        'users').doc(user!.uid).get();
 
-    List<dynamic> interesse = variable['padiglioni'];
-    for (int j = 0; j < snapshot.data!.length; j++) {
-      for (int i = 0; i < interesse.length; i++) {
-        if (snapshot.data![j].nome == variable['padiglioni'][i]) {
-          snapshot.data![j].check = true;
-        }
-      }
-    }
-  }
-
-  ControlPhoto1(AsyncSnapshot<List<Photo>> snapshot) async {
-    final _auth1 = FirebaseAuth.instance;
-    User? user = _auth1.currentUser;
-    DocumentSnapshot variable = await FirebaseFirestore.instance.collection(
-        'users').doc(user!.uid).get();
-
-    List<dynamic> interesse = variable['interessi'];
-    for (int j = 0; j < snapshot.data!.length; j++) {
-      for (int i = 0; i < interesse.length; i++) {
-        if (snapshot.data![j].name == variable['interessi'][i]) {
-          snapshot.data![j].check = true;
-        }
-      }
-    }
-  }
 }
 
 class PhotosList extends StatelessWidget {
@@ -204,7 +202,6 @@ class PhotosList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ControlPhoto();
     return ListView.builder(
       //padding: const EdgeInsets.all(8),
         scrollDirection: Axis.vertical,

@@ -17,11 +17,11 @@ class SwitchState extends State<Switchh> {
   int currentIndex = 0;
 
   final screens =[
-    const HomePage(),
-    const Padiglioni11(),
-    const Map1(),
-    const Preferiti(),
-    const Account(),
+     const HomePage(),
+     const Padiglioni11(),
+     const Map1(),
+     const Preferiti(),
+     const Account(),
   ];
 
   @override

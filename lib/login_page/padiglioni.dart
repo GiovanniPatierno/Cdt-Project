@@ -310,7 +310,7 @@ class Box extends StatefulWidget {
   final List<Padiglioni> photos;
   final List<Interessi> interessi;
   final int index;
-  bool check = false;
+  bool check ;
 
   @override
   _BoxState createState() => _BoxState();
