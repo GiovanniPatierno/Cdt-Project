@@ -100,15 +100,12 @@ class _PreferitiState extends State<Preferiti> {
 
   @override
   Widget build(BuildContext context) {
-
     var firebaseUser = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance.collection("users").doc(firebaseUser!.uid)
         .get()
         .then((value) {
       list = value.data()!['padiglioni'] as List;
     });
-
-
     FirebaseFirestore.instance.collection("users").doc(firebaseUser.uid)
         .get()
         .then((value1) {
@@ -117,7 +114,8 @@ class _PreferitiState extends State<Preferiti> {
     });
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Preferiti'),
+          automaticallyImplyLeading: false,
+          title: const Center(child: Text('Preferiti')),
           backgroundColor: Colors.black,
         ),
         body: Container(padding: EdgeInsets.all(20),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:cdt/dettagli_padiglione.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +22,13 @@ class _PadiglioniState extends State<Padiglioni11> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Padiglioni'),
+        automaticallyImplyLeading: false,
+        title:const Center( child: Text('Padiglioni')),
         backgroundColor: Colors.black,
       ),
       body: Column(
         children: <Widget>[
-          Container(
+          /*Container(
             padding: const EdgeInsets.only(top:8.00,left:15.00, right: 15.00, bottom: 3.00),
             child:
           Card(
@@ -50,7 +52,7 @@ class _PadiglioniState extends State<Padiglioni11> {
                   labelText: "Search...",
                   border: InputBorder.none));})
               ),
-          ),
+          ),*/
           //Text("Result: " + filter()),
           Expanded(
             child:
@@ -85,7 +87,7 @@ class Photolist2 extends StatelessWidget {
   final List<Photo> photos;
 
 
-  String filter(){
+ /* String filter(){
     if (_PadiglioniState().searchController.text == "") return "null";
     String result = "";
     int i = 0;
@@ -96,7 +98,7 @@ class Photolist2 extends StatelessWidget {
     }
     if (result == '') return 'null';
     return Text(photos[i].nome).toString();
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +109,14 @@ class Photolist2 extends StatelessWidget {
               return Container(
                 padding: EdgeInsets.all(8.00),
                 child:
+             InkWell(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Dettagli(index: index, data:photos)),
+                );
+              },
+              child:
                 Card(
                 child:
                 Column(
@@ -120,6 +130,7 @@ class Photolist2 extends StatelessWidget {
                     Image.asset('assets/images/padiglione-francia-expo.jpg'),
                   ]
                 )
+              )
               )
               );
             }

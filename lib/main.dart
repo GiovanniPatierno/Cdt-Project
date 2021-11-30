@@ -7,9 +7,12 @@ import 'package:cdt/preferiti_page.dart';
 import 'package:cdt/switchh.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:latlong2/latlong.dart' as latLng;
 
 Future<void> main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());

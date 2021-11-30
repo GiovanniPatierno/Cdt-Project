@@ -52,7 +52,9 @@ dependencies:
   location: ^4.3.0
   flutter_map_tappable_polyline: ^3.1.0
   syncfusion_flutter_maps: ^19.3.55-beta
-
+  geolocator: 7.6.2
+  flutter_map_location_marker: ^1.0.0
+  google_maps_flutter: ^2.1.1
 
 
 

@@ -11,72 +11,12 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
-  DatabaseReference dbRef = FirebaseDatabase.instance.reference().child("utenti");
-  final GlobalKey<FormState> _formkey2 = GlobalKey<FormState>();
-  final _auth = FirebaseAuth.instance;
-
-
-
-  final passwordEditingController = new TextEditingController();
-  final confirmPasswordEditingController = new TextEditingController();
 
 
 
   @override
   Widget build(BuildContext context) {
-    //password field
-    final passwordField = TextFormField(
-        autofocus: false,
-        controller: passwordEditingController,
-        obscureText: true,
-        validator: (value) {
-          RegExp regex = new RegExp(r'^.{6,}$');
-          if (value!.isEmpty) {
-            return ("Password is required for login");
-          }
-          if (!regex.hasMatch(value)) {
-            return ("Enter Valid Password(Min. 6 Character)");
-          }
-        },
-        onSaved: (value) {
-          passwordEditingController.text = value!;
-        },
-        textInputAction: TextInputAction.next,
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-          labelText: '   Password',
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-              borderSide: BorderSide(color:  Color(0x0b000000))
-          ),
-          filled: true,
-        ));
 
-    //confirm password field
-    final confirmPasswordField = TextFormField(
-        autofocus: false,
-        controller: confirmPasswordEditingController,
-        obscureText: true,
-        validator: (value) {
-          if (confirmPasswordEditingController.text !=
-              passwordEditingController.text) {
-            return "Password don't match";
-          }
-          return null;
-        },
-        onSaved: (value) {
-          confirmPasswordEditingController.text = value!;
-        },
-        textInputAction: TextInputAction.done,
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-          labelText: '   Conferma password',
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-              borderSide: BorderSide(color:  Color(0x0b000000))
-          ),
-          filled: true,
-        ));
 
     final signUpButton = Center(
       child:
@@ -108,7 +48,8 @@ class _AccountState extends State<Account> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Account'),
+        automaticallyImplyLeading: false,
+        title:const Center( child: Text('Account')),
         backgroundColor: Colors.black,
       ),
       body: SingleChildScrollView(child:
@@ -195,11 +136,8 @@ class _AccountState extends State<Account> {
                   child:
                     Column(
                       children: <Widget>[
-                         const SizedBox(height: 20),
-                           passwordField,
-                             const SizedBox(height: 20),
-                           confirmPasswordField,
-                         const SizedBox(height: 50),
+
+                         const SizedBox(height: 190),
                          signUpButton,
                             const SizedBox(height: 5),
                            const Divider(
@@ -207,6 +145,7 @@ class _AccountState extends State<Account> {
                           height: 1,
                             ),
                     const SizedBox(height: 10),
+                ])),
                         Center(
                             child:
                             GestureDetector(
@@ -229,10 +168,6 @@ class _AccountState extends State<Account> {
               ]
           )
           )
-
-            ],
-          )
-    )
-    );
+          );
   }
 }

@@ -16,20 +16,20 @@ class Switchh extends StatefulWidget {
 class SwitchState extends State<Switchh> {
   int currentIndex = 0;
 
-  final screens =[
-     const HomePage(),
-     const Padiglioni11(),
-     const Map1(),
-     const Preferiti(),
-     const Account(),
+  final screens = [
+    const HomePage(),
+    const Padiglioni11(),
+    const Map1(),
+    const Preferiti(),
+    const Account(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
-        index: currentIndex,
-        children: screens
+          index: currentIndex,
+          children: screens
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -41,12 +41,12 @@ class SwitchState extends State<Switchh> {
         onTap: (index) => setState(() => currentIndex = index),
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_balance),
-              label: 'Padiglioni',
+            icon: Icon(Icons.account_balance),
+            label: 'Padiglioni',
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.map),

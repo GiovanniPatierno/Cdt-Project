@@ -1,14 +1,23 @@
 import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+
+import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 import 'package:http/http.dart' as http;
 import 'dart:async';
-//import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart' ;
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+
+
+
+
+
 
 Future<List<Padiglioni88>> fetchPadiglioni(http.Client client) async {
   final response = await client
@@ -153,6 +162,7 @@ class _MapState extends State<Map1>  {
               }
             }
           }
+
           return Lists(data: snapshot.data!);
         } else {
           return const Center(
@@ -170,62 +180,86 @@ class Lists extends StatelessWidget {
   var points = <latLng.LatLng>[];
   var locations = "";
 
+  var bounds = LatLngBounds();
+
 
   @override
   Widget build(BuildContext context) {
+    Position currentPostion;
+    latLng.LatLng utente;
+    Geolocator geolocator;
+    Position position;
 
-    latLng.LatLng currentPostion;
 
-   // void getLocation() async { Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high); print(position); }
-   // getLocation();
-   Color Colorrr(int i) {
-     Color color = Colors.black38;
-       if(data[i].check == true) {
-         color = Colors.green;
+    locatePosition() async {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      currentPostion = position;
+      utente = latLng.LatLng(position.latitude, position.longitude);
+    }
 
-     }
-     return color;
-   }
+    // locatePosition();
+    //print(utente);
+
+
+    Color Colorrr(int i) {
+      Color color = Colors.black87;
+      if (data[i].check == true) {
+        color = Colors.green;
+      }
+      return color;
+    }
 
 
     var markers = <Marker>[];
-    for(int i= 0; i<data.length; i++) {
+    for (int i = 0; i < data.length; i++) {
       markers.add(Marker(
-        width: 20.0,
-        height: 20.0,
-        point: latLng.LatLng(data[i].geometry!.coordinates![0][1],data[i].geometry!.coordinates![0][0]),
-        builder: (ctx) =>
-        Container(
-          width: 0.1,
-          height: 0.1,
-          decoration: BoxDecoration(color: Colors.white,
-            border: Border.all(color: Colors.black)
-        ),
-      )));
+          width: 10.0,
+          height: 10.0,
+          point: getCenter(i),//latLng.LatLng(data[i].geometry!.coordinates![2][1],
+              //data[i].geometry!.coordinates![2][0]),
+          builder: (ctx) =>
+              Container(
+                  padding: EdgeInsets.all(10),
+                  width: 0.1,
+                  height: 0.1,
+                  decoration: BoxDecoration(color: Colors.white,
+                      border: Border.all(color: Colors.black)
+                  ),
+                  child: const Text(
+                      "204"
+                  )
+              )));
     }
 
-  var poli = <Polyline>[] ;
-   for(int i= 0; i<data.length; i++) {
-    poli.add(Polyline(
-         points: points = CratorPoints(i),
-         //strokeWidth: 15.00,
-         color: Colorrr(i),
-         borderColor: Colorrr(i),
-        borderStrokeWidth: 0.5,
-     ));
-   }
+    var poli = <Polygon>[];
+    for (int i = 0; i < data.length; i++) {
+      poli.add(Polygon(
+        points: points = CratorPoints(i),
+        //strokeWidth: 5.00,
+        color: Colorrr(i),
+        borderColor: Colorrr(i),
+        borderStrokeWidth: 1.0,
+
+      ));
+    }
 
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Map'),
+          automaticallyImplyLeading: false,
+          title:const Center( child: Text('Map')),
           backgroundColor: Colors.black,
         ),
         body: FlutterMap(
           options: MapOptions(
-            center:  latLng.LatLng(41.136423, 16.838197),
-            zoom: 20.0,
+            center: latLng.LatLng(41.136423, 16.838197),
+            zoom: 15.0,
+            plugins: [
+              LocationMarkerPlugin(),
+            ],
           ),
+          mapController: MapController(),
           layers: [
             TileLayerOptions(
               urlTemplate: "https://api.mapbox.com/styles/v1/patierno1/ckwg549m607ej15o9c4y8xphp/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoicGF0aWVybm8xIiwiYSI6ImNrdWZhb3EyYjBnajkydnFlMmdnYXVqenEifQ.CF0aaxP46ecopgUdTrDmpA",
@@ -237,52 +271,48 @@ class Lists extends StatelessWidget {
                 return const Text("© OpenStreetMap contributors");
               },
             ),
-            MarkerLayerOptions(
-              markers:  [
-                Marker(
-                  width: 50.0,
-                  height: 50.0,
-                  point: latLng.LatLng(41.136423, 16.838197),
-                  builder: (ctx) =>
-                  const Icon( Icons.person, color: Colors.black38),
-                ),
 
-              ],
+            LocationMarkerLayerOptions(
+              marker: const DefaultLocationMarker(
+                color: Colors.green,
+              ),
+              markerSize: const Size(20, 20),
+              accuracyCircleColor: Colors.green.withOpacity(0.1),
+              headingSectorColor: Colors.green.withOpacity(0.8),
+              headingSectorRadius: 120,
+              markerAnimationDuration: Duration.zero, // disable animation
             ),
-            PolylineLayerOptions(
-                polylines: poli
+            PolygonLayerOptions(
+                polygons: poli
             ),
-        MarkerLayerOptions(
-            markers: markers
-        )
+            MarkerLayerOptions(
+                markers: markers
+            )
           ],
         )
     );
   }
 
-
-
-
-  List<latLng.LatLng> CratorPoints (int index){
-           var points = <latLng.LatLng>[];
-           for(int j = 0; j < data[index].geometry!.coordinates!.length; j++) {
-             points.add(latLng.LatLng(data[index].geometry!.coordinates![j][1],
-                 data[index].geometry!.coordinates![j][0]));
-           }
-
-     return points;
+  List<latLng.LatLng> CratorPoints(int index) {
+    var points = <latLng.LatLng>[];
+    for (int j = 0; j < data[index].geometry!.coordinates!.length; j++) {
+      points.add(latLng.LatLng(data[index].geometry!.coordinates![j][1],
+          data[index].geometry!.coordinates![j][0]));
+    }
+    return points;
   }
 
+  getCenter(int index)  {
+
+    latLng.LatLng center = latLng.LatLng(
+      (data[index].geometry!.coordinates![0][1] + data[index].geometry!.coordinates![4][1]) / 2,
+      (data[index].geometry!.coordinates![0][0] +data[index].geometry!.coordinates![4][0]) / 2,
+    );
+
+    return center;
+  }
 }
-/*class Position {
-  void _getUserLocation() async {
-    var position = await GeolocatorPlatform.instance
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    setState(() {
-      currentPostion = latLng.LatLng(position.latitude, position.longitude);
-    });
-  }
-}*/
+
 
 
 
