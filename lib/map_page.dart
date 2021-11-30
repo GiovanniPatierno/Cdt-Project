@@ -203,9 +203,9 @@ class Lists extends StatelessWidget {
 
 
     Color Colorrr(int i) {
-      Color color = Colors.black87;
+      Color color = Colors.black87.withOpacity(0.5);
       if (data[i].check == true) {
-        color = Colors.green;
+        color = Colors.green.withOpacity(0.5);
       }
       return color;
     }
@@ -262,10 +262,9 @@ class Lists extends StatelessWidget {
           mapController: MapController(),
           layers: [
             TileLayerOptions(
-              urlTemplate: "https://api.mapbox.com/styles/v1/patierno1/ckwg549m607ej15o9c4y8xphp/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoicGF0aWVybm8xIiwiYSI6ImNrdWZhb3EyYjBnajkydnFlMmdnYXVqenEifQ.CF0aaxP46ecopgUdTrDmpA",
+              urlTemplate: "https://api.mapbox.com/styles/v1/patierno1/ckwlyz6455mvj14n4c872coe4/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoicGF0aWVybm8xIiwiYSI6ImNrdWZhb3EyYjBnajkydnFlMmdnYXVqenEifQ.CF0aaxP46ecopgUdTrDmpA",
               additionalOptions: {
                 'accessToken': 'pk.eyJ1IjoicGF0aWVybm8xIiwiYSI6ImNrdWZhb3EyYjBnajkydnFlMmdnYXVqenEifQ.CF0aaxP46ecopgUdTrDmpA',
-                'id': 'mapbox.mapbox-streets-v8'
               },
               attributionBuilder: (_) {
                 return const Text("© OpenStreetMap contributors");
