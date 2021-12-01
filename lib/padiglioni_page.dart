@@ -155,16 +155,18 @@ List<Photo> parsePhotos(String responseBody) {
 class Photo {
   final String id;
   final String nome;
+  bool check = false;
   //final String descrizione;
   final String stand;
   //final String immagine;
 
-  const Photo( {
+   Photo( {
     //required this.immagine,
     //required this.descrizione,
     required this.stand,
     required this.id,
     required this.nome,
+    required this.check
   });
 
   factory Photo.fromJson(Map<String, dynamic> json) {
@@ -174,6 +176,7 @@ class Photo {
       stand: json['stand'] as String,
       //immagine: json['immagine'] as String,
       //descrizione: json['descrizione'] as String,
+      check: false
     );
   }
 

@@ -5,6 +5,8 @@ import 'package:cdt/padiglioni_page.dart';
 import 'package:cdt/preferiti_page.dart';
 import 'package:flutter/material.dart';
 
+import 'new_preferiti.dart';
+
 class Switchh extends StatefulWidget {
   const Switchh({Key? key}) : super(key: key);
 
@@ -14,13 +16,13 @@ class Switchh extends StatefulWidget {
 
 
 class SwitchState extends State<Switchh> {
-  int currentIndex = 0;
+  int currentIndex = 2;
 
   final screens = [
     const HomePage(),
     const Padiglioni11(),
     const Map1(),
-    const Preferiti(),
+    const Stand2(),
     const Account(),
   ];
 
