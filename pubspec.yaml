@@ -55,6 +55,7 @@ dependencies:
   geolocator: 7.6.2
   flutter_map_location_marker: ^1.0.0
   google_maps_flutter: ^2.1.1
+  fluttertoast: ^8.0.8
 
 
 

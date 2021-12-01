@@ -1,4 +1,5 @@
 import 'package:cdt/login_page/preferiti.dart';
+import 'package:cdt/login_page/stand.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -291,7 +292,7 @@ String?errorMessage;
         .doc(user.uid)
         .set(userModel.toMap());
 
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (contex) => const PreferitiRegistrazione()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (contex) => const Stand()));
 
   }
 }

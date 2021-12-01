@@ -143,7 +143,7 @@ Future<List<Photo>> fetchPhotos(http.Client client) async {
   final response = await client
       .get(Uri.parse('http://192.168.1.241:9250/api/padiglioni'));
   // Use the compute function to run parsePhotos in a separate isolate.
-  return compute(parsePhotos, response.body);
+  return compute(parsePhotos, utf8.decode(response.bodyBytes));
 }
 
 // A function that converts a response body into a List<Photo>.
@@ -156,13 +156,13 @@ class Photo {
   final String id;
   final String nome;
   //final String descrizione;
-  final String area;
+  final String stand;
   //final String immagine;
 
   const Photo( {
     //required this.immagine,
     //required this.descrizione,
-    required this.area,
+    required this.stand,
     required this.id,
     required this.nome,
   });
@@ -171,7 +171,7 @@ class Photo {
     return Photo(
       id: json['id'] as String,
       nome: json['nome'] as String,
-      area: json['area'] as String,
+      stand: json['stand'] as String,
       //immagine: json['immagine'] as String,
       //descrizione: json['descrizione'] as String,
     );
