@@ -22,26 +22,41 @@ class Stand extends StatefulWidget {
 }
 
 class _StandState extends State<Stand> {
+  List list = [];
   @override
   Widget build(BuildContext context) {
+    var firebaseUser = FirebaseAuth.instance.currentUser;
+    FirebaseFirestore.instance.collection("users").doc(firebaseUser!.uid)
+        .get()
+        .then((value) {
+      list = value.data()!['padiglioni'] as List;
+    });
     return  Scaffold(
       body:
       FutureBuilder<List<Photo>>(
-            future: fetchPhotos(http.Client()),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return  Center(
-                  child: Text(snapshot.error.toString()),
-                );
-              } else if (snapshot.hasData) {
-                return Photolist2(photos: snapshot.data!);
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+        future: fetchPhotos(http.Client()),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return  Center(
+              child: Text(snapshot.error.toString()),
+            );
+          } else if (snapshot.hasData) {
+            for (int j = 0; j < snapshot.data!.length; j++) {
+              for (int i = 0; i < list.length; i++) {
+                if (snapshot.data![j].nome == list[i]) {
+                  snapshot.data![j].check = true;
+                }
               }
-            },
-          ),
+            }
+
+            return Photolist2(photos: snapshot.data!);
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
     );
   }
 }
@@ -49,7 +64,6 @@ class _StandState extends State<Stand> {
 class Photolist2 extends StatelessWidget {
   Photolist2({Key? key, required this.photos}) : super(key: key);
   final List<Photo> photos;
-  bool check = false;
 
 
   @override
@@ -60,11 +74,63 @@ class Photolist2 extends StatelessWidget {
         Column(children: <Widget>[
           Expanded(child:
           ListView.builder(
-              padding: const EdgeInsets.only(left: 10, right: 10, top: 50),
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               itemCount: photos.length,
               itemBuilder: (context, index) {
+                if (photos[index].stand == 'BE WINE') {
+                  photos[index].color = Colors.pink;
+                }
+                if (photos[index].stand == 'SALONE DELL INNOVAZIONE') {
+                  photos[index].color = Colors.black87;
+                }
+                if (photos[index].stand == 'ENTI E ISTITUZIONI') {
+                  photos[index].color = Colors.cyan;
+                }
+                if (photos[index].stand == 'AUTOMOTIVE') {
+                  photos[index].color = Colors.teal;
+                }
+                if (photos[index].stand == 'ARTICOLI DA REGALO') {
+                  photos[index].color = Colors.deepPurple;
+                }
+                if (photos[index].stand == 'ARTICOLI PER LA CASA') {
+                  photos[index].color = Colors.brown;
+                }
+                if (photos[index].stand == 'SICILIA') {
+                  photos[index].color = Colors.purple;
+                }
+                if (photos[index].stand == 'CENTRO CONGRESSI DEL LEVANTE') {
+                  photos[index].color = Colors.green;
+                }
+                if (photos[index].stand == 'EDILIZIA ABITATIVA') {
+                  photos[index].color = Colors.lightGreen;
+                }
+                if (photos[index].stand == 'ARTIGIANATO ESTERO') {
+                  photos[index].color = Colors.deepOrangeAccent;
+                }
+                if (photos[index].stand == 'SALONE DELL ARREDAMENTO') {
+                  photos[index].color = Colors.blue;
+                }
+                if (photos[index].stand == 'ARREDO PER ESTERNI') {
+                  photos[index].color = Colors.orangeAccent;
+                }
+                if (photos[index].stand == 'AGROALIMENTARE') {
+                  photos[index].color = Colors.lime;
+                }
+                if (photos[index].stand == 'CENTRO SERVIZIO VOLONTARIATO') {
+                  photos[index].color = Colors.blueGrey;
+                }
+                if (photos[index].stand == 'BENESSERE E RELAX') {
+                  photos[index].color = Colors.purpleAccent;
+                }
+                if (photos[index].stand == 'AREA BIMBI') {
+                  photos[index].color = Colors.limeAccent;
+                }
+                if (photos[index].stand == 'MEDITERRANEAN BEAUTY BARI') {
+                  photos[index].color = Colors.yellow;
+                }
+
                 // print(photos[index].color);
                 //photos[index].color = Colors.primaries random List<blue,green>;
                 //print(color);
@@ -128,10 +194,11 @@ class Photolist2 extends StatelessWidget {
                                         child:
                                         Text(
                                           photos[index].stand,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontFamily: 'Roboto',
                                             fontSize: 14,
-                                            color: Colors.black38,
+                                            color: photos[index].color,
+                                            //Colors.black38,
                                             letterSpacing: 0.098,
                                             fontWeight: FontWeight.w500,
                                             height: 1.7142857142857142,
@@ -159,7 +226,7 @@ class Photolist2 extends StatelessWidget {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (contex) => const Switchh()));
               },
-              child: const Text('Avanti'),
+              child: const Text('Aggiorna'),
             ),
           )
         ])
@@ -169,33 +236,34 @@ class Photolist2 extends StatelessWidget {
 }
 
 class Button1 extends StatefulWidget {
-   Button1({Key? key, required this.photos, required this.index}) : super(key: key);
+  Button1({Key? key, required this.photos, required this.index}) : super(key: key);
   List<Photo> photos;
   int index;
+
 
   @override
   _ButtonState createState() => _ButtonState();
 }
 
 class _ButtonState extends State<Button1> {
-  DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child("users");
+  DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child(
+      "users");
   final _auth1 = FirebaseAuth.instance;
   bool isButtonPressed = false;
 
 
   @override
   Widget build(BuildContext context) {
-
     return OutlinedButton(
-      child:  Text(
-          isButtonPressed? 'Aggiunto': "Aggiungi", style: TextStyle(
-          color:  isButtonPressed? Colors.red : Colors.black38)),
+      child: Text(
+          widget.photos[widget.index].check? 'Rimuovi' : "Aggiungi", style: TextStyle(
+          color:  widget.photos[widget.index].check? widget.photos[widget.index].color : Colors.black38)),
       style: OutlinedButton.styleFrom(
         //primary: Colors.white,
         //backgroundColor: Colors.blueG,
         //onSurface: Colors.orangeAccent,
-        side:  BorderSide(
-            color:  isButtonPressed ? Colors.red : Colors.black38, width: 1),
+        side: BorderSide(
+            color:  widget.photos[widget.index].check? widget.photos[widget.index].color : Colors.black38, width: 1),
         //elevation: 20,
         //minimumSize: Size(100, 50),
         //shadowColor: Colors.deepOrange,
@@ -205,16 +273,15 @@ class _ButtonState extends State<Button1> {
       ),
       onPressed: () {
         setState(() =>
-        isButtonPressed = !isButtonPressed
+        widget.photos[widget.index].check = !widget.photos[widget.index].check
         );
-        if(isButtonPressed == true) {
+        if ( widget.photos[widget.index].check == true) {
           postDetailToFirestore1();
           _showToast(context);
-      }else{
+        } else {
           _showToast1(context);
           removeDetailtofirestore();
         }
-
       },
     );
   }
@@ -229,8 +296,8 @@ class _ButtonState extends State<Button1> {
         .update({
       'padiglioni': FieldValue.arrayUnion([widget.photos[widget.index].nome])
     });
-
   }
+
   removeDetailtofirestore() async {
     FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
     User? user = _auth1.currentUser;
@@ -241,7 +308,6 @@ class _ButtonState extends State<Button1> {
         .update({
       'padiglioni': FieldValue.arrayRemove([widget.photos[widget.index].nome])
     });
-
   }
 
   void _showToast(BuildContext context) {
@@ -265,5 +331,7 @@ class _ButtonState extends State<Button1> {
       ),
     );
   }
-}
 
+
+
+}

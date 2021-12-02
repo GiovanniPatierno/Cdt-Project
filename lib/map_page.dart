@@ -45,9 +45,11 @@ class Padiglioni88 {
   Geometry? geometry;
   List<Interessi>? interessi;
   bool check = false;
+  Color color = Colors.black38;
+  String? stand;
 
 
-  Padiglioni88({this.id, this.nome, this.descrizione, this.area, this.type, this.geometry,   required this.check});
+  Padiglioni88({this.id, this.nome, this.descrizione, this.area, this.type, this.geometry,   required this.check,  required this.color, required this.stand,});
 
   Padiglioni88.fromJson(Map<String, dynamic> json) {
     id = json["id"];
@@ -57,6 +59,8 @@ class Padiglioni88 {
     type = json["type"];
     geometry = json["geometry"] == null ? null : Geometry.fromJson(json["geometry"]);
     interessi = json["interessi"]==null ? null : (json["interessi"] as List).map((e)=>Interessi.fromJson(e)).toList();
+    stand = json['stand'] as String;
+
   }
 
   Map<String, dynamic> toJson() {
@@ -204,11 +208,60 @@ class Lists extends StatelessWidget {
 
 
     Color Colorrr(int i) {
-      Color color = Colors.black87.withOpacity(0.5);
       if (data[i].check == true) {
-        color = Colors.green.withOpacity(0.5);
+        if (data[i].stand == 'BE WINE') {
+          data[i].color = Colors.pink;
+        }
+        if (data[i].stand == 'SALONE DELL INNOVAZIONE') {
+          data[i].color = Colors.black87;
+        }
+        if (data[i].stand == 'ENTI E ISTITUZIONI') {
+          data[i].color = Colors.cyan;
+        }
+        if (data[i].stand == 'AUTOMOTIVE') {
+          data[i].color = Colors.teal;
+        }
+        if (data[i].stand == 'ARTICOLI DA REGALO') {
+          data[i].color = Colors.deepPurple;
+        }
+        if (data[i].stand == 'ARTICOLI PER LA CASA') {
+          data[i].color = Colors.brown;
+        }
+        if (data[i].stand == 'SICILIA') {
+          data[i].color = Colors.purple;
+        }
+        if (data[i].stand == 'CENTRO CONGRESSI DEL LEVANTE') {
+          data[i].color = Colors.green;
+        }
+        if (data[i].stand == 'EDILIZIA ABITATIVA') {
+          data[i].color = Colors.lightGreen;
+        }
+        if (data[i].stand == 'ARTIGIANATO ESTERO') {
+          data[i].color = Colors.deepOrangeAccent;
+        }
+        if (data[i].stand == 'SALONE DELL ARREDAMENTO') {
+          data[i].color = Colors.blue;
+        }
+        if (data[i].stand == 'ARREDO PER ESTERNI') {
+          data[i].color = Colors.orangeAccent;
+        }
+        if (data[i].stand == 'AGROALIMENTARE') {
+          data[i].color = Colors.lime;
+        }
+        if (data[i].stand == 'CENTRO SERVIZIO VOLONTARIATO') {
+          data[i].color = Colors.blueGrey;
+        }
+        if (data[i].stand == 'BENESSERE E RELAX') {
+          data[i].color = Colors.purpleAccent;
+        }
+        if (data[i].stand == 'AREA BIMBI') {
+          data[i].color = Colors.limeAccent;
+        }
+        if (data[i].stand == 'MEDITERRANEAN BEAUTY BARI') {
+          data[i].color = Colors.yellow;
+        }
       }
-      return color;
+      return data[i].color ;
     }
 
 

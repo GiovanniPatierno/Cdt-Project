@@ -158,7 +158,9 @@ class Photo {
   bool check = false;
   //final String descrizione;
   final String stand;
+  Color color = Colors.black38;
   //final String immagine;
+
 
    Photo( {
     //required this.immagine,
@@ -166,7 +168,8 @@ class Photo {
     required this.stand,
     required this.id,
     required this.nome,
-    required this.check
+    required this.check,
+     required this.color
   });
 
   factory Photo.fromJson(Map<String, dynamic> json) {
@@ -176,9 +179,9 @@ class Photo {
       stand: json['stand'] as String,
       //immagine: json['immagine'] as String,
       //descrizione: json['descrizione'] as String,
-      check: false
+      check: false,
+        color : Colors.black38
     );
   }
-
 
 }
