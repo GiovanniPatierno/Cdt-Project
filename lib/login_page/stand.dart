@@ -81,17 +81,46 @@ class _StandState extends State<Stand> {
   }
 }
 
-class Photolist2 extends StatelessWidget {
-  Photolist2({Key? key, required this.photos}) : super(key: key);
+//class Photolist2 extends StatelessWidget {
+ // Photolist2({Key? key, required this.photos}) : super(key: key);
+  //final List<Photo> photos;
+
+class Photolist2 extends StatefulWidget {
+  const Photolist2({Key? key, required this.photos}) : super(key: key);
   final List<Photo> photos;
 
+  @override
+  _Photolist2State createState() => _Photolist2State();
+}
 
-  Map map1 ={'Be Wine' : Colors.pink, 'SALONE DELL INNOVAZIONE':Colors.black87,'ENTI E ISTITUZIONI':Colors.cyan,'AUTOMOTIVE':Colors.teal,'ARTICOLI DA REGALO':Colors.deepPurple,'ARTICOLI PER LA CASA': Colors.brown,'SICILIA':Colors.purple,'CENTRO CONGRESSI DEL LEVANTE':Colors.green, 'EDILIZIA ABITATIVA':Colors.lightGreen,'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,'SALONE DELL ARREDAMENTO':Colors.blue,'ARREDO PER ESTERNI':Colors.orangeAccent,'AGROALIMENTARE':Colors.lime,'CENTRO SERVIZIO VOLONTARIATO':Colors.blueGrey,'BENESSERE E RELAX': Colors.purpleAccent,'AREA BIMBI':Colors.limeAccent,'MEDITERRANEAN BEAUTY BARI':Colors.yellow};
+class _Photolist2State extends State<Photolist2> {
+
+  Map map1 = {
+    'Be Wine': Colors.pink,
+    'SALONE DELL INNOVAZIONE': Colors.black87,
+    'ENTI E ISTITUZIONI': Colors.cyan,
+    'AUTOMOTIVE': Colors.teal,
+    'ARTICOLI DA REGALO': Colors.deepPurple,
+    'ARTICOLI PER LA CASA': Colors.brown,
+    'SICILIA': Colors.purple,
+    'CENTRO CONGRESSI DEL LEVANTE': Colors.green,
+    'EDILIZIA ABITATIVA': Colors.lightGreen,
+    'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,
+    'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,
+    'SALONE DELL ARREDAMENTO': Colors.blue,
+    'ARREDO PER ESTERNI': Colors.orangeAccent,
+    'AGROALIMENTARE': Colors.lime,
+    'CENTRO SERVIZIO VOLONTARIATO': Colors.blueGrey,
+    'BENESSERE E RELAX': Colors.purpleAccent,
+    'AREA BIMBI': Colors.limeAccent,
+    'MEDITERRANEAN BEAUTY BARI': Colors.yellow
+  };
 
 
   @override
   Widget build(BuildContext context) {
-   //print( map['Be Wine']);
+    //print( map['Be Wine']);
+    int? _value = 1;
     return Scaffold(
         body:
         Column(children:
@@ -101,90 +130,101 @@ class Photolist2 extends StatelessWidget {
               padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
-              itemCount: photos.length,
+              itemCount: widget.photos.length,
               itemBuilder: (context, index) {
-
-                  if (map1.containsKey(photos[index].stand)){
-                    photos[index].color = map1[photos[index].stand];
-                  }
+                if (map1.containsKey(widget.photos[index].stand)) {
+                  widget.photos[index].color =
+                  map1[ widget.photos[index].stand];
+                }
 
                 return Column(
+
                     children: <Widget>[
                       Card(margin: const EdgeInsets.only(top: 25),
-                          child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>
-                                      Dettagli(index: index, data: photos)),
-                                );
-                              },
-                              child:
-                              Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
+
+                          child:
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                      Container(
+                                          margin: const EdgeInsets.only(
+                                              left: 15, top: 10),
+                                          child:
+                                          Text(
+                                            widget.photos[index].nome,
+                                            //textAlign: TextAlign.start,
+                                            style: const TextStyle(
+                                              fontFamily: 'Roboto',
+                                              fontSize: 20,
+                                              color: Color(0xde000000),
+                                              letterSpacing: 0.15000000953674317,
+                                              fontWeight: FontWeight.w500,
+                                              height: 1.2,
+                                            ),
+                                          )),
+
+                                      Container(
                                         margin: const EdgeInsets.only(
-                                            left: 15, top: 10),
+                                            left: 16, top: 13, right: 24),
                                         child:
-                                        Text(
-                                          photos[index].nome,
-                                          //textAlign: TextAlign.start,
-                                          style: const TextStyle(
-                                            fontFamily: 'Roboto',
-                                            fontSize: 20,
-                                            color: Color(0xde000000),
-                                            letterSpacing: 0.15000000953674317,
-                                            fontWeight: FontWeight.w500,
-                                            height: 1.2,
-                                          ),
-                                        )),
-                                    Row(
-                                        children: [
-                                          Container(
-                                              margin: const EdgeInsets.only(
-                                                  left: 15, top: 10),
-                                              child:
-                                              const Text(
-                                                'descrizione',
-                                                style: TextStyle(
-                                                  fontFamily: 'Roboto',
-                                                  fontSize: 16,
-                                                  color: Color(0xde000000),
-                                                  letterSpacing: 0.496,
-                                                  height: 1.5,
-                                                ),
-                                              )),
-                                          Container(
-                                              padding: const EdgeInsets.only(
-                                                  left: 160),
-                                              child: Button1(
-                                                photos: photos, index: index,)
-                                          )
-                                        ]),
-                                    Container(margin: const EdgeInsets.only(
-                                        left: 15.00, top: 40, bottom: 7),
-                                        child:
-                                        Text(
-                                          photos[index].stand,
-                                          style: TextStyle(
-                                            fontFamily: 'Roboto',
-                                            fontSize: 14,
-                                            color: photos[index].color,
-                                            //Colors.black38,
-                                            letterSpacing: 0.098,
-                                            fontWeight: FontWeight.w500,
-                                            height: 1.7142857142857142,
-                                          ),
-                                          textHeightBehavior: const TextHeightBehavior(
-                                              applyHeightToFirstAscent: false),
-                                          textAlign: TextAlign.left,
-                                        )),
-                                    Container(height: 5,color: photos[index].color,)
-                                  ]
-                              )
-                          )),
+                                        DropdownButtonHideUnderline(child:
+                                            DropdownButton(
+                                              elevation: 8,
+                                              autofocus: true,
+                                              isExpanded: true,
+                                            icon: Icon(Icons.info_outline),
+                                            value: _value,
+                                            items: [
+                                              const DropdownMenuItem(
+                                                child: Text("Info"),
+                                                value: 1,
+                                              ),
+                                              DropdownMenuItem(
+                                                child: Container(padding:EdgeInsets.all(20),
+                                              child:Text(widget.photos[index]
+                                                    .descrizione!, textAlign: TextAlign.start,)),
+                                                value: 2,
+                                              ),
+
+                                            ],
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _value = value as int?;
+                                              });
+                                            },hint:Text("info"),
+
+                                      ))),
+                                      Container(
+                                          padding: const EdgeInsets.only(top:10,
+                                              left: 150),
+                                          child: Button1(
+                                            photos: widget.photos,
+                                            index: index,)
+                                      ),
+                                Container(margin: const EdgeInsets.only(
+                                    left: 15.00, top: 40, bottom: 7),
+                                    child:
+                                    Text(
+                                      widget.photos[index].stand,
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontSize: 14,
+                                        color: widget.photos[index].color,
+                                        //Colors.black38,
+                                        letterSpacing: 0.098,
+                                        fontWeight: FontWeight.w500,
+                                        height: 1.7142857142857142,
+                                      ),
+                                      textHeightBehavior: const TextHeightBehavior(
+                                          applyHeightToFirstAscent: false),
+                                      textAlign: TextAlign.left,
+                                    )),
+                                Container(height: 5, color: widget.photos[index]
+                                    .color,)
+                              ]
+                          )
+                      ),
                     ]);
               }
           )),
@@ -209,6 +249,7 @@ class Photolist2 extends StatelessWidget {
 
     );
   }
+
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(

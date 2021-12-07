@@ -100,7 +100,6 @@ class Photolist2 extends StatelessWidget {
   };
 
   Colorrr(i){
-
       if (map1.containsKey(photos[i].stand)) {
        photos[i].color = map1[photos[i].stand];
       }
@@ -178,12 +177,11 @@ class Photo {
   String? descrizione;
   final String stand;
   Color color = Colors.black38;
-  //final String immagine;
+
 
 
    Photo( {
-    //required this.immagine,
-    //required this.descrizione,
+
     required this.stand,
     required this.id,
     required this.nome,
@@ -197,7 +195,6 @@ class Photo {
       id: json['id'] as String,
       nome: json['nome'] as String,
       stand: json['stand'] as String,
-      //immagine: json['immagine'] as String,
       descrizione: json['descrizione'] as String,
       check: false,
         color : Colors.black38
