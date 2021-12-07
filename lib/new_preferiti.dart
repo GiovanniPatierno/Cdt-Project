@@ -11,6 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import '../dettagli_padiglione.dart';
 import '../switchh.dart';
+import 'dettagli1.dart';
 
 
 
@@ -65,28 +66,19 @@ class Photolist2 extends StatelessWidget {
   Photolist2({Key? key, required this.photos}) : super(key: key);
   final List<Photo> photos;
 
+  Map map1 ={'Be Wine' : Colors.pink, 'SALONE DELL INNOVAZIONE':Colors.black87,'ENTI E ISTITUZIONI':Colors.cyan,'AUTOMOTIVE':Colors.teal,'ARTICOLI DA REGALO':Colors.deepPurple,'ARTICOLI PER LA CASA': Colors.brown,'SICILIA':Colors.purple,'CENTRO CONGRESSI DEL LEVANTE':Colors.green, 'EDILIZIA ABITATIVA':Colors.lightGreen,'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,'SALONE DELL ARREDAMENTO':Colors.blue,'ARREDO PER ESTERNI':Colors.orangeAccent,'AGROALIMENTARE':Colors.lime,'CENTRO SERVIZIO VOLONTARIATO':Colors.blueGrey,'BENESSERE E RELAX': Colors.purpleAccent,'AREA BIMBI':Colors.limeAccent,'MEDITERRANEAN BEAUTY BARI':Colors.yellow};
+
 
   @override
   Widget build(BuildContext context) {
     //String color;
-    return Scaffold(
+    return Scaffold(appBar: AppBar(
+      automaticallyImplyLeading: false,
+      title:const Center( child: Text('Preferiti')),
+      backgroundColor: Colors.black,
+    ),
         body:
         Column(children: <Widget>[
-          Container(
-            margin: const EdgeInsets.all(30),
-            child:
-            const Text(
-              "Qui nella sezione preferiti puoi selezionare nuovi padiglioni che desideri visitare",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 16,
-                color: Color(0xde000000),
-                letterSpacing: 0.496,
-                height: 1.5,
-              ),
-            ),
-          ),
           Expanded(child:
           ListView.builder(
               padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
@@ -94,61 +86,11 @@ class Photolist2 extends StatelessWidget {
               shrinkWrap: true,
               itemCount: photos.length,
               itemBuilder: (context, index) {
-                if (photos[index].stand == 'BE WINE') {
-                  photos[index].color = Colors.pink;
-                }
-                if (photos[index].stand == 'SALONE DELL INNOVAZIONE') {
-                  photos[index].color = Colors.black87;
-                }
-                if (photos[index].stand == 'ENTI E ISTITUZIONI') {
-                  photos[index].color = Colors.cyan;
-                }
-                if (photos[index].stand == 'AUTOMOTIVE') {
-                  photos[index].color = Colors.teal;
-                }
-                if (photos[index].stand == 'ARTICOLI DA REGALO') {
-                  photos[index].color = Colors.deepPurple;
-                }
-                if (photos[index].stand == 'ARTICOLI PER LA CASA') {
-                  photos[index].color = Colors.brown;
-                }
-                if (photos[index].stand == 'SICILIA') {
-                  photos[index].color = Colors.purple;
-                }
-                if (photos[index].stand == 'CENTRO CONGRESSI DEL LEVANTE') {
-                  photos[index].color = Colors.green;
-                }
-                if (photos[index].stand == 'EDILIZIA ABITATIVA') {
-                  photos[index].color = Colors.lightGreen;
-                }
-                if (photos[index].stand == 'ARTIGIANATO ESTERO') {
-                  photos[index].color = Colors.deepOrangeAccent;
-                }
-                if (photos[index].stand == 'SALONE DELL ARREDAMENTO') {
-                  photos[index].color = Colors.blue;
-                }
-                if (photos[index].stand == 'ARREDO PER ESTERNI') {
-                  photos[index].color = Colors.orangeAccent;
-                }
-                if (photos[index].stand == 'AGROALIMENTARE') {
-                  photos[index].color = Colors.lime;
-                }
-                if (photos[index].stand == 'CENTRO SERVIZIO VOLONTARIATO') {
-                  photos[index].color = Colors.blueGrey;
-                }
-                if (photos[index].stand == 'BENESSERE E RELAX') {
-                  photos[index].color = Colors.purpleAccent;
-                }
-                if (photos[index].stand == 'AREA BIMBI') {
-                  photos[index].color = Colors.limeAccent;
-                }
-                if (photos[index].stand == 'MEDITERRANEAN BEAUTY BARI') {
-                  photos[index].color = Colors.yellow;
+
+                if (map1.containsKey(photos[index].stand)){
+                  photos[index].color = map1[photos[index].stand];
                 }
 
-                // print(photos[index].color);
-                //photos[index].color = Colors.primaries random List<blue,green>;
-                //print(color);
                 return Column(
                     children: <Widget>[
                       Card(margin: const EdgeInsets.only(top: 15),
@@ -157,7 +99,7 @@ class Photolist2 extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) =>
-                                      Dettagli(index: index, data: photos)),
+                                      Dettagli1(index: index, data: photos)),
                                 );
                               },
                               child:
@@ -221,7 +163,8 @@ class Photolist2 extends StatelessWidget {
                                           textHeightBehavior: const TextHeightBehavior(
                                               applyHeightToFirstAscent: false),
                                           textAlign: TextAlign.left,
-                                        ))
+                                        )),
+                                    Container(height: 5,color: photos[index].color,)
                                   ]
                               )
                           )),
@@ -229,8 +172,8 @@ class Photolist2 extends StatelessWidget {
               }
           )),
 
-          Container(
-            padding: const EdgeInsets.all(10),
+         Container(
+            padding: const EdgeInsets.only(bottom: 45, top: 10),
             child:
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -239,15 +182,27 @@ class Photolist2 extends StatelessWidget {
               ),
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (contex) => const Switchh()));
+                    MaterialPageRoute(builder: (contex) =>  Switchh(index2: 2)));
+                _showToast(context);
               },
-              child: const Text('Aggiorna'),
+              child: const Text('Conferma le mie modifiche'),
             ),
           )
         ])
 
     );
   }
+  void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 1),
+        content: Text('Mappa aggiornata!'),
+        //action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
+    );
+  }
+
 }
 
 class Button1 extends StatefulWidget {
@@ -266,25 +221,24 @@ class _ButtonState extends State<Button1> {
   final _auth1 = FirebaseAuth.instance;
   bool isButtonPressed = false;
 
-
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
       child: Text(
           widget.photos[widget.index].check? 'Rimuovi' : "Aggiungi", style: TextStyle(
-          color: widget.photos[widget.index].check? widget.photos[widget.index].color : Colors.black38)),
+          color:  widget.photos[widget.index].check? Colors.white : Colors.black)),
       style: OutlinedButton.styleFrom(
         //primary: Colors.white,
-        //backgroundColor: Colors.blueG,
+        backgroundColor: widget.photos[widget.index].check? Colors.black :  Colors.white,
         //onSurface: Colors.orangeAccent,
         side: BorderSide(
-            color: widget.photos[widget.index].check? widget.photos[widget.index].color : Colors.black38, width: 1),
+            color:  widget.photos[widget.index].check? Colors.white : Colors.black, width: 1),
         //elevation: 20,
         //minimumSize: Size(100, 50),
         //shadowColor: Colors.deepOrange,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
-                30)),
+                5)),
       ),
       onPressed: () {
         setState(() =>
@@ -292,9 +246,9 @@ class _ButtonState extends State<Button1> {
         );
         if ( widget.photos[widget.index].check == true) {
           postDetailToFirestore1();
-          _showToast(context);
+
         } else {
-          _showToast1(context);
+
           removeDetailtofirestore();
         }
       },
@@ -325,27 +279,6 @@ class _ButtonState extends State<Button1> {
     });
   }
 
-  void _showToast(BuildContext context) {
-    final scaffold = ScaffoldMessenger.of(context);
-    scaffold.showSnackBar(
-      const SnackBar(
-        duration: Duration(seconds: 1),
-        content: Text('Padiglione aggiunto ai preferiti'),
-        //action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
-  }
-
-  void _showToast1(BuildContext context) {
-    final scaffold = ScaffoldMessenger.of(context);
-    scaffold.showSnackBar(
-      const SnackBar(
-        duration: Duration(seconds: 1),
-        content: Text('Padiglione rimosso dai preferiti'),
-        //action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
-  }
 
 
 

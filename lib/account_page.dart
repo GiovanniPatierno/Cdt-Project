@@ -3,6 +3,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'login_page/login.dart';
+import 'messaggio_sicurezza.dart';
+
 class Account extends StatefulWidget {
   const Account({Key? key}) : super(key: key);
 
@@ -30,8 +33,11 @@ class _AccountState extends State<Account> {
               onPrimary: Colors.white,
             ),
             onPressed: () {
-              //Registrati( passwordEditingController.text);},
-            },
+              Navigator.push(
+                  context,
+             MaterialPageRoute(builder: (context) => const Login()));
+              },
+
             child: const Text('LOGOUT',
               style: TextStyle(
                 fontFamily: 'Roboto',
@@ -150,8 +156,8 @@ class _AccountState extends State<Account> {
                             child:
                             GestureDetector(
                                 onTap: () {
-                   // Navigator.push(context, MaterialPageRoute(
-                        //builder: (context) => const Registration()));
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) =>  MessagioSicurezza()));
                   },
                   child: const Text(
                     'cancella account',

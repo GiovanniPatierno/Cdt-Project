@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,12 +9,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 import 'package:flutter_map/plugin_api.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 //import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:geolocator/geolocator.dart' ;
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+
+import 'dettagli_padiglione.dart';
+//import 'package:universe/universe.dart';
 
 
 
@@ -25,7 +30,7 @@ Future<List<Padiglioni88>> fetchPadiglioni(http.Client client) async {
       .get(Uri.parse('http://192.168.1.241:9250/api/padiglioni'));
   // Use the compute function to run parsePhotos in a separate isolate.
   //print(response.body);
-  return compute(parsePadiglioni, response.body);
+  return compute(parsePadiglioni, utf8.decode(response.bodyBytes));
 }
 
 // A function that converts a response body into a List<Photo>.
@@ -47,6 +52,8 @@ class Padiglioni88 {
   bool check = false;
   Color color = Colors.black38;
   String? stand;
+  int capienzaMax = 30;
+  int capienzaAttuale= 17;
 
 
   Padiglioni88({this.id, this.nome, this.descrizione, this.area, this.type, this.geometry,   required this.check,  required this.color, required this.stand,});
@@ -206,92 +213,126 @@ class Lists extends StatelessWidget {
     // locatePosition();
     //print(utente);
 
+    Map map1 ={'Be Wine' : Colors.pink, 'SALONE DELL INNOVAZIONE':Colors.black87,'ENTI E ISTITUZIONI':Colors.cyan,'AUTOMOTIVE':Colors.teal,'ARTICOLI DA REGALO':Colors.deepPurple,'ARTICOLI PER LA CASA': Colors.brown,'SICILIA':Colors.purple,'CENTRO CONGRESSI DEL LEVANTE':Colors.green, 'EDILIZIA ABITATIVA':Colors.lightGreen,'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,'SALONE DELL ARREDAMENTO':Colors.blue,'ARREDO PER ESTERNI':Colors.orangeAccent,'AGROALIMENTARE':Colors.lime,'CENTRO SERVIZIO VOLONTARIATO':Colors.blueGrey,'BENESSERE E RELAX': Colors.purpleAccent,'AREA BIMBI':Colors.limeAccent,'MEDITERRANEAN BEAUTY BARI':Colors.yellow};
 
-    Color Colorrr(int i) {
-      if (data[i].check == true) {
-        if (data[i].stand == 'BE WINE') {
-          data[i].color = Colors.pink;
-        }
-        if (data[i].stand == 'SALONE DELL INNOVAZIONE') {
-          data[i].color = Colors.black87;
-        }
-        if (data[i].stand == 'ENTI E ISTITUZIONI') {
-          data[i].color = Colors.cyan;
-        }
-        if (data[i].stand == 'AUTOMOTIVE') {
-          data[i].color = Colors.teal;
-        }
-        if (data[i].stand == 'ARTICOLI DA REGALO') {
-          data[i].color = Colors.deepPurple;
-        }
-        if (data[i].stand == 'ARTICOLI PER LA CASA') {
-          data[i].color = Colors.brown;
-        }
-        if (data[i].stand == 'SICILIA') {
-          data[i].color = Colors.purple;
-        }
-        if (data[i].stand == 'CENTRO CONGRESSI DEL LEVANTE') {
-          data[i].color = Colors.green;
-        }
-        if (data[i].stand == 'EDILIZIA ABITATIVA') {
-          data[i].color = Colors.lightGreen;
-        }
-        if (data[i].stand == 'ARTIGIANATO ESTERO') {
-          data[i].color = Colors.deepOrangeAccent;
-        }
-        if (data[i].stand == 'SALONE DELL ARREDAMENTO') {
-          data[i].color = Colors.blue;
-        }
-        if (data[i].stand == 'ARREDO PER ESTERNI') {
-          data[i].color = Colors.orangeAccent;
-        }
-        if (data[i].stand == 'AGROALIMENTARE') {
-          data[i].color = Colors.lime;
-        }
-        if (data[i].stand == 'CENTRO SERVIZIO VOLONTARIATO') {
-          data[i].color = Colors.blueGrey;
-        }
-        if (data[i].stand == 'BENESSERE E RELAX') {
-          data[i].color = Colors.purpleAccent;
-        }
-        if (data[i].stand == 'AREA BIMBI') {
-          data[i].color = Colors.limeAccent;
-        }
-        if (data[i].stand == 'MEDITERRANEAN BEAUTY BARI') {
-          data[i].color = Colors.yellow;
+    Colorrr(i){
+      if(data[i].check == true) {
+        if (map1.containsKey(data[i].stand)) {
+          data[i].color = map1[data[i].stand];
         }
       }
-      return data[i].color ;
+      return  data[i].color;
     }
 
+    Colorr(i){
+
+        if (map1.containsKey(data[i].stand)) {
+          data[i].color = map1[data[i].stand];
+        }
+
+      return  data[i].color;
+    }
+
+    Map map2 = {0: 10, 1:24, 2:9, 3:5, 4:19, 5:29, 6:18, 7:10, 8:23, 9:30, 10:20, 11:2, 12: 26, 13:21, 14:14, 15:1, 16:25, 17:22, 18:17, 19:2, 20:10, 21: 2, 22: 16, 23:19, 24:7, 25: 13, 26:9 };
+    String Rischio(map, int Max, int i){
+      String rischio = '';
+      if(Max - map[i] < 7 ){
+        rischio = 'Alto';
+      }
+      if( 14 >= Max - map[i] && Max - map[i] >= 7){
+        rischio = 'Medio';
+      }if(Max - map[i] > 14){
+        rischio = 'Basso';
+      }
+      return rischio;
+    }
+
+    Color ColorRischio(map, int Max, int i){
+      Color rischio = Colors.black;
+      if(Max - map[i] < 7 ){
+        rischio = Colors.red;
+      }
+      if( 14 >= Max - map[i] && Max - map[i] >= 7){
+        rischio = Colors.yellow;
+      }if(Max - map[i] > 14){
+        rischio = Colors.green;
+      }
+      return rischio;
+    }
 
     var markers = <Marker>[];
     for (int i = 0; i < data.length; i++) {
       markers.add(Marker(
-          width: 10.0,
-          height: 10.0,
-          point: getCenter(i),//latLng.LatLng(data[i].geometry!.coordinates![2][1],
-              //data[i].geometry!.coordinates![2][0]),
+         // width: 10.0,
+         // height: 10.0,
+          point: getCenter(i),
           builder: (ctx) =>
-              Container(
-                  padding: EdgeInsets.all(10),
-                  width: 0.1,
-                  height: 0.1,
-                  decoration: BoxDecoration(color: Colors.white,
-                      border: Border.all(color: Colors.black)
-                  ),
-                  child: const Text(
-                      "204"
-                  )
-              )));
+          InkWell(
+            child:
+            Container(
+              height: 40,
+              width: 40,
+            ),
+              onTap: () {
+                showModalBottomSheet(context: context, builder: (builder){
+                  return Container(
+                    color: Colors.white,
+                    child:
+                      Column(
+                        children: <Widget>[
+                          Container(
+                            margin: const EdgeInsets.only(top: 20),
+                              child:
+                          Text(data[i].nome!,style: const TextStyle(
+                            fontFamily: 'Roboto',
+                            fontSize: 20,
+                            color: Color(0xde000000),
+                            letterSpacing: 0.252,
+                            height: 1.4285714285714286,
+                          ))),
+                          const SizedBox(height: 20),
+                          Text(
+                            data[i].stand!,
+                            style: TextStyle(color: Colorr(i)),
+                          ),
+                          const SizedBox(height: 30),
+                           Text('Capienza massima: '+data[i].capienzaMax.toString()),
+                          const SizedBox(height: 20),
+                           Text('Visitatori all interno :'+data[i].capienzaAttuale.toString()),
+                          const SizedBox(height: 20),
+                          Row(children:  [
+                           Container(
+                             margin: EdgeInsets.only(left: 160),
+                               child:
+                               const Text("Rischio: ")
+                           ),
+                            Text(Rischio(map2,30,i),
+                              style: TextStyle(
+                                  color: ColorRischio(map2,30, i)
+                              ),
+                            ),
+                          ]),
+                          const SizedBox(height: 40),
+                          Text( data[i].descrizione!, textAlign: TextAlign.center,)
+                        ],
+                      )
+                  );
+                });
+              },
+                )
+      )
+
+    );
     }
+
+
 
     var poli = <Polygon>[];
     for (int i = 0; i < data.length; i++) {
       poli.add(Polygon(
         points: points = CratorPoints(i),
         //strokeWidth: 5.00,
-        color: Colorrr(i),
+        color: Colorrr(i).withOpacity(0.5),
         borderColor: Colorrr(i),
         borderStrokeWidth: 1.0,
 
@@ -310,7 +351,7 @@ class Lists extends StatelessWidget {
             center: latLng.LatLng(41.136423, 16.838197),
             zoom: 15.0,
             plugins: [
-              LocationMarkerPlugin(),
+              const LocationMarkerPlugin(),
             ],
           ),
           mapController: MapController(),
@@ -327,12 +368,13 @@ class Lists extends StatelessWidget {
 
             LocationMarkerLayerOptions(
               marker: const DefaultLocationMarker(
-                color: Colors.green,
+                color: Colors.blueAccent,
+
               ),
-              markerSize: const Size(20, 20),
-              accuracyCircleColor: Colors.green.withOpacity(0.1),
-              headingSectorColor: Colors.green.withOpacity(0.8),
-              headingSectorRadius: 120,
+              markerSize: const Size(10, 10),
+              accuracyCircleColor: Colors.blueAccent.withOpacity(0.1),
+              headingSectorColor: Colors.blueAccent.withOpacity(0.8),
+              headingSectorRadius: 90,
               markerAnimationDuration: Duration.zero, // disable animation
             ),
             PolygonLayerOptions(
@@ -356,10 +398,16 @@ class Lists extends StatelessWidget {
   }
 
   getCenter(int index)  {
-
+    double lat = 0, long = 0;
+    for(int i = 0; i<data[index].geometry!.coordinates!.length; i++){
+      lat = lat + data[index].geometry!.coordinates![i][1];
+    }
+    for(int i = 0; i<data[index].geometry!.coordinates!.length; i++){
+      long = long + data[index].geometry!.coordinates![i][0];
+    }
     latLng.LatLng center = latLng.LatLng(
-      (data[index].geometry!.coordinates![0][1] + data[index].geometry!.coordinates![4][1]) / 2,
-      (data[index].geometry!.coordinates![0][0] +data[index].geometry!.coordinates![4][0]) / 2,
+      lat / data[index].geometry!.coordinates!.length,
+      long / data[index].geometry!.coordinates!.length
     );
 
     return center;

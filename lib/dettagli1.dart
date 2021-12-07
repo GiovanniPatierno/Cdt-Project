@@ -1,4 +1,6 @@
 import 'package:cdt/padiglioni_page.dart' as pad;
+//import 'package:cdt/preferiti_page.dart';
+import 'package:cdt/switchh.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -7,9 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'login_page/stand.dart';
 import 'map_page.dart';
+import 'new_preferiti.dart';
 
-class Dettagli extends StatelessWidget {
-   Dettagli({Key? key, required this.index, required this.data})
+class Dettagli1 extends StatelessWidget {
+  Dettagli1({Key? key, required this.index, required this.data})
       : super(key: key);
   final int index;
   final List<pad.Photo> data;
@@ -21,31 +24,32 @@ class Dettagli extends StatelessWidget {
       body:
       Column(
           children: <Widget>[
-            Container(
-              margin: const EdgeInsets.only(top: 50, right: 320),
-              child:
+      Container(
+      margin: const EdgeInsets.only(top: 50, right: 320),
+        child:
             GestureDetector(
-              child: const Icon(Icons.arrow_back,color: Colors.black,size: 30,),
+              child: const Icon(Icons.arrow_back,color: Colors.black,size: 30),
               onTap: (){
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Stand()),
+                  MaterialPageRoute(builder: (context) => Switchh(index2: 3)),
                 );
               },
             )),
             Container(
-                margin: EdgeInsets.only(top:30,right: 20, left: 20),
+
+                margin: const EdgeInsets.only(top: 30 , right: 20, left: 20),
                 child:
                 Text(data[index].nome, style: const TextStyle(fontSize: 25),)),
             Container(
                 margin: const EdgeInsets.only(top: 150, right: 20, left: 20),
                 child:
-                Text(
+                 Text(
                     data[index].descrizione!,
                     textAlign: TextAlign.start)
             ),
-            const SizedBox(height: 90),
-          Button1(photos: data, index: index)
+            const SizedBox(height: 150),
+            Button1(photos: data, index: index)
           ]
       ),
     );
@@ -67,6 +71,7 @@ class _ButtonState extends State<Button1> {
       "users");
   final _auth1 = FirebaseAuth.instance;
   bool isButtonPressed = false;
+
 
 
   @override
@@ -102,6 +107,7 @@ class _ButtonState extends State<Button1> {
       },
     );
   }
+
 
   postDetailToFirestore1() async {
     FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;

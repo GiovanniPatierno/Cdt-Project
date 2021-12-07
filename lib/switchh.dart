@@ -2,13 +2,14 @@ import 'package:cdt/account_page.dart';
 import 'package:cdt/home_page.dart';
 import 'package:cdt/map_page.dart';
 import 'package:cdt/padiglioni_page.dart';
-import 'package:cdt/preferiti_page.dart';
+
 import 'package:flutter/material.dart';
 
 import 'new_preferiti.dart';
 
 class Switchh extends StatefulWidget {
-  const Switchh({Key? key}) : super(key: key);
+   Switchh({Key? key, required this.index2}) : super(key: key);
+  int index2;
 
   @override
   SwitchState createState() => SwitchState();
@@ -16,21 +17,23 @@ class Switchh extends StatefulWidget {
 
 
 class SwitchState extends State<Switchh> {
-  int currentIndex = 2;
+  //int currentIndex = 0;
+
 
   final screens = [
     const HomePage(),
     const Padiglioni11(),
-    const Map1(),
+     const Map1(),
     const Stand2(),
     const Account(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    //currentIndex = widget.index2;
     return Scaffold(
       body: IndexedStack(
-          index: currentIndex,
+          index: widget.index2, //currentIndex,
           children: screens
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -39,8 +42,8 @@ class SwitchState extends State<Switchh> {
         unselectedItemColor: Colors.white30,
         selectedItemColor: Colors.white,
         selectedFontSize: 15,
-        currentIndex: currentIndex,
-        onTap: (index) => setState(() => currentIndex = index),
+        currentIndex: widget.index2,//currentIndex,
+        onTap: (index) => setState(() => widget.index2 = index),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

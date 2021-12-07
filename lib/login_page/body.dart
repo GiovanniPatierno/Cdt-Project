@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:auth_buttons/auth_buttons.dart';
 import 'package:cdt/login_page/google_sing_in.dart';
+import 'package:cdt/login_page/post_login.dart';
 import 'package:cdt/login_page/registration.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -147,7 +148,7 @@ class _LoginBodyState extends State<LoginBody> {
                                 context, listen: false);
                             provider.googleLogin();
                             Navigator.push(context, MaterialPageRoute(builder: (
-                                contex) => const Switchh()));
+                                contex) =>  Switchh( index2: 2,)));
                           },
                         ),
                       ),
@@ -188,7 +189,8 @@ class _LoginBodyState extends State<LoginBody> {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: _email, password: _password);
         Navigator.push(
-            context, MaterialPageRoute(builder: (contex) => const Switchh()));
+            context, MaterialPageRoute(builder: (contex) => const PostLogin()));
+        _showToast(context);
       }on FirebaseAuthException catch (error){switch (error.code) {
         case "invalid-email":
           errorMessage = "Your email address appears to be malformed.";
@@ -213,6 +215,16 @@ class _LoginBodyState extends State<LoginBody> {
           errorMessage = "An undefined Error happened.";
       }}
     }
+  }
+  void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 1),
+        content: Text('Login avvenuto con successo!'),
+        //action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
+    );
   }
 }
 

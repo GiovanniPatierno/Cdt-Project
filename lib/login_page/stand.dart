@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:cdt/login_page/post_stand.dart';
 import 'package:cdt/padiglioni_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,6 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import '../dettagli_padiglione.dart';
 import '../switchh.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as Bottom;
 
 
 
@@ -25,6 +27,18 @@ class _StandState extends State<Stand> {
   List list = [];
   @override
   Widget build(BuildContext context) {
+
+
+    Future.delayed(Duration.zero, () =>
+    Bottom.showMaterialModalBottomSheet(context: context, builder: (builder){
+      return Container(
+        padding: EdgeInsets.all(20),
+        height: 200,
+          color: Colors.white,
+          child:const Text('Per completare la registrazione inserisci i padiglioni che desideri visitare \n ',style: TextStyle(color: Colors.black, fontSize: 20), textAlign: TextAlign.center)
+
+      );
+    }));
     var firebaseUser = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance.collection("users").doc(firebaseUser!.uid)
         .get()
@@ -32,7 +46,12 @@ class _StandState extends State<Stand> {
       list = value.data()!['padiglioni'] as List;
     });
     return  Scaffold(
-      body:
+      body:Column(children: <Widget>[
+        Container(
+            margin: const EdgeInsets.only(right: 260, top : 40),
+            child:
+            const Text('Padiglioni:', style: TextStyle(color: Colors.black, fontSize: 20) , textAlign: TextAlign.left, )),
+      Expanded(child:
       FutureBuilder<List<Photo>>(
         future: fetchPhotos(http.Client()),
         builder: (context, snapshot) {
@@ -48,7 +67,6 @@ class _StandState extends State<Stand> {
                 }
               }
             }
-
             return Photolist2(photos: snapshot.data!);
           } else {
             return const Center(
@@ -56,7 +74,9 @@ class _StandState extends State<Stand> {
             );
           }
         },
-      ),
+      )),
+      ]
+      )
     );
   }
 }
@@ -66,12 +86,16 @@ class Photolist2 extends StatelessWidget {
   final List<Photo> photos;
 
 
+  Map map1 ={'Be Wine' : Colors.pink, 'SALONE DELL INNOVAZIONE':Colors.black87,'ENTI E ISTITUZIONI':Colors.cyan,'AUTOMOTIVE':Colors.teal,'ARTICOLI DA REGALO':Colors.deepPurple,'ARTICOLI PER LA CASA': Colors.brown,'SICILIA':Colors.purple,'CENTRO CONGRESSI DEL LEVANTE':Colors.green, 'EDILIZIA ABITATIVA':Colors.lightGreen,'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,'SALONE DELL ARREDAMENTO':Colors.blue,'ARREDO PER ESTERNI':Colors.orangeAccent,'AGROALIMENTARE':Colors.lime,'CENTRO SERVIZIO VOLONTARIATO':Colors.blueGrey,'BENESSERE E RELAX': Colors.purpleAccent,'AREA BIMBI':Colors.limeAccent,'MEDITERRANEAN BEAUTY BARI':Colors.yellow};
+
+
   @override
   Widget build(BuildContext context) {
-    //String color;
+   //print( map['Be Wine']);
     return Scaffold(
         body:
-        Column(children: <Widget>[
+        Column(children:
+        <Widget>[
           Expanded(child:
           ListView.builder(
               padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
@@ -79,64 +103,14 @@ class Photolist2 extends StatelessWidget {
               shrinkWrap: true,
               itemCount: photos.length,
               itemBuilder: (context, index) {
-                if (photos[index].stand == 'BE WINE') {
-                  photos[index].color = Colors.pink;
-                }
-                if (photos[index].stand == 'SALONE DELL INNOVAZIONE') {
-                  photos[index].color = Colors.black87;
-                }
-                if (photos[index].stand == 'ENTI E ISTITUZIONI') {
-                  photos[index].color = Colors.cyan;
-                }
-                if (photos[index].stand == 'AUTOMOTIVE') {
-                  photos[index].color = Colors.teal;
-                }
-                if (photos[index].stand == 'ARTICOLI DA REGALO') {
-                  photos[index].color = Colors.deepPurple;
-                }
-                if (photos[index].stand == 'ARTICOLI PER LA CASA') {
-                  photos[index].color = Colors.brown;
-                }
-                if (photos[index].stand == 'SICILIA') {
-                  photos[index].color = Colors.purple;
-                }
-                if (photos[index].stand == 'CENTRO CONGRESSI DEL LEVANTE') {
-                  photos[index].color = Colors.green;
-                }
-                if (photos[index].stand == 'EDILIZIA ABITATIVA') {
-                  photos[index].color = Colors.lightGreen;
-                }
-                if (photos[index].stand == 'ARTIGIANATO ESTERO') {
-                  photos[index].color = Colors.deepOrangeAccent;
-                }
-                if (photos[index].stand == 'SALONE DELL ARREDAMENTO') {
-                  photos[index].color = Colors.blue;
-                }
-                if (photos[index].stand == 'ARREDO PER ESTERNI') {
-                  photos[index].color = Colors.orangeAccent;
-                }
-                if (photos[index].stand == 'AGROALIMENTARE') {
-                  photos[index].color = Colors.lime;
-                }
-                if (photos[index].stand == 'CENTRO SERVIZIO VOLONTARIATO') {
-                  photos[index].color = Colors.blueGrey;
-                }
-                if (photos[index].stand == 'BENESSERE E RELAX') {
-                  photos[index].color = Colors.purpleAccent;
-                }
-                if (photos[index].stand == 'AREA BIMBI') {
-                  photos[index].color = Colors.limeAccent;
-                }
-                if (photos[index].stand == 'MEDITERRANEAN BEAUTY BARI') {
-                  photos[index].color = Colors.yellow;
-                }
 
-                // print(photos[index].color);
-                //photos[index].color = Colors.primaries random List<blue,green>;
-                //print(color);
+                  if (map1.containsKey(photos[index].stand)){
+                    photos[index].color = map1[photos[index].stand];
+                  }
+
                 return Column(
                     children: <Widget>[
-                      Card(margin: const EdgeInsets.only(top: 15),
+                      Card(margin: const EdgeInsets.only(top: 25),
                           child: InkWell(
                               onTap: () {
                                 Navigator.push(
@@ -206,7 +180,8 @@ class Photolist2 extends StatelessWidget {
                                           textHeightBehavior: const TextHeightBehavior(
                                               applyHeightToFirstAscent: false),
                                           textAlign: TextAlign.left,
-                                        ))
+                                        )),
+                                    Container(height: 5,color: photos[index].color,)
                                   ]
                               )
                           )),
@@ -215,7 +190,7 @@ class Photolist2 extends StatelessWidget {
           )),
 
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.only(top: 10, bottom: 45),
             child:
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -224,15 +199,28 @@ class Photolist2 extends StatelessWidget {
               ),
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (contex) => const Switchh()));
+                    MaterialPageRoute(builder: (contex) => const PostStand()));
+                _showToast(context);
               },
-              child: const Text('Aggiorna'),
+              child: const Text('Continua'),
             ),
-          )
+          ),
         ])
 
     );
   }
+  void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 1),
+        content: Text('Mappa creata con successo!'),
+        //action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
+    );
+  }
+
+
 }
 
 class Button1 extends StatefulWidget {
@@ -257,19 +245,19 @@ class _ButtonState extends State<Button1> {
     return OutlinedButton(
       child: Text(
           widget.photos[widget.index].check? 'Rimuovi' : "Aggiungi", style: TextStyle(
-          color:  widget.photos[widget.index].check? widget.photos[widget.index].color : Colors.black38)),
+          color:  widget.photos[widget.index].check? Colors.white : Colors.black)),
       style: OutlinedButton.styleFrom(
         //primary: Colors.white,
-        //backgroundColor: Colors.blueG,
+        backgroundColor: widget.photos[widget.index].check? Colors.black :  Colors.white,
         //onSurface: Colors.orangeAccent,
         side: BorderSide(
-            color:  widget.photos[widget.index].check? widget.photos[widget.index].color : Colors.black38, width: 1),
+            color:  widget.photos[widget.index].check? Colors.white : Colors.black, width: 1),
         //elevation: 20,
         //minimumSize: Size(100, 50),
         //shadowColor: Colors.deepOrange,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
-                30)),
+                5)),
       ),
       onPressed: () {
         setState(() =>
@@ -277,9 +265,9 @@ class _ButtonState extends State<Button1> {
         );
         if ( widget.photos[widget.index].check == true) {
           postDetailToFirestore1();
-          _showToast(context);
+
         } else {
-          _showToast1(context);
+
           removeDetailtofirestore();
         }
       },
@@ -309,29 +297,6 @@ class _ButtonState extends State<Button1> {
       'padiglioni': FieldValue.arrayRemove([widget.photos[widget.index].nome])
     });
   }
-
-  void _showToast(BuildContext context) {
-    final scaffold = ScaffoldMessenger.of(context);
-    scaffold.showSnackBar(
-      const SnackBar(
-        duration: Duration(seconds: 1),
-        content: Text('Padiglione aggiunto ai preferiti'),
-        //action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
-  }
-
-  void _showToast1(BuildContext context) {
-    final scaffold = ScaffoldMessenger.of(context);
-    scaffold.showSnackBar(
-      const SnackBar(
-        duration: Duration(seconds: 1),
-        content: Text('Padiglione rimosso dai preferiti'),
-        //action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
-  }
-
 
 
 }

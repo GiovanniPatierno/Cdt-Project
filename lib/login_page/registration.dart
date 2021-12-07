@@ -1,4 +1,4 @@
-import 'package:cdt/login_page/preferiti.dart';
+
 import 'package:cdt/login_page/stand.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -184,7 +184,7 @@ String?errorMessage;
               ),
               onPressed: () {
               Registrati(emailEditingController.text, passwordEditingController.text);},
-              child: const Text('REGISTRATI',
+              child: const Text('CONTINUA',
                 style: TextStyle(
                   fontFamily: 'Roboto',
                   fontSize: 14,
@@ -198,17 +198,7 @@ String?errorMessage;
     ),
     );
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(36.0),
-              child: Form(
-                key: _formkey1,
-                child: Column(
+    var column = Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
@@ -218,7 +208,12 @@ String?errorMessage;
                           "assets/images/ex_logo.png",
                           fit: BoxFit.contain,
                         )),
-                    const SizedBox(height: 45),
+                    const SizedBox(height: 20),
+                     Container(
+                       margin: const EdgeInsets.only(right: 180),
+                         child:
+                         const Text('Dati personali:', style: TextStyle(color: Colors.black, fontSize: 20) , textAlign: TextAlign.left, )),
+                    const SizedBox(height: 20),
                     firstNameField,
                     const SizedBox(height: 20),
                     secondNameField,
@@ -232,7 +227,18 @@ String?errorMessage;
                     signUpButton,
                     const SizedBox(height: 15),
                   ],
-                ),
+                );
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: SingleChildScrollView(
+          child: Container(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(36.0),
+              child: Form(
+                key: _formkey1,
+                child: column,
               ),
             ),
           ),
@@ -293,8 +299,19 @@ String?errorMessage;
         .set(userModel.toMap());
 
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (contex) => const Stand()));
+    _showToast(context);
 
   }
+void _showToast(BuildContext context) {
+  final scaffold = ScaffoldMessenger.of(context);
+  scaffold.showSnackBar(
+    const SnackBar(
+      duration: Duration(seconds: 1),
+      content: Text('Registrazione  avvenuta con successo!'),
+      //action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+    ),
+  );
+}
 }
 
 class UserModel {

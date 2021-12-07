@@ -1,10 +1,14 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:cdt/dettagli_padiglione.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import 'dettagli2.dart';
 
 class Padiglioni11 extends StatefulWidget {
   const Padiglioni11({Key? key}) : super(key: key);
@@ -15,11 +19,17 @@ class Padiglioni11 extends StatefulWidget {
 
 class _PadiglioniState extends State<Padiglioni11> {
   TextEditingController searchController = TextEditingController();
-
+  List list = [];
 
 
   @override
   Widget build(BuildContext context) {
+    var firebaseUser = FirebaseAuth.instance.currentUser;
+    FirebaseFirestore.instance.collection("users").doc(firebaseUser!.uid)
+        .get()
+        .then((value) {
+      list = value.data()!['padiglioni'] as List;
+    });
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -28,32 +38,7 @@ class _PadiglioniState extends State<Padiglioni11> {
       ),
       body: Column(
         children: <Widget>[
-          /*Container(
-            padding: const EdgeInsets.only(top:8.00,left:15.00, right: 15.00, bottom: 3.00),
-            child:
-          Card(
-            elevation: 2.0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0)),
-              child:
-              FutureBuilder<List<Photo>>(
-              future: fetchPhotos(http.Client()),
-               builder: (context, snapshot) {
-              return TextField(
-                controller: searchController,
-                decoration: InputDecoration(
-                  suffixIcon: GestureDetector(
-                    onTap: () {
-                      Photolist2(photos: snapshot.data!).filter();
-                      setState(() {});
-                    },
-                    child: const Icon(Icons.search)),
-                  contentPadding: EdgeInsets.all(12.00),
-                  labelText: "Search...",
-                  border: InputBorder.none));})
-              ),
-          ),*/
-          //Text("Result: " + filter()),
+
           Expanded(
             child:
               FutureBuilder<List<Photo>>(
@@ -64,6 +49,13 @@ class _PadiglioniState extends State<Padiglioni11> {
                       child: Text('An error has occurred!'),
                     );
                   } else if (snapshot.hasData) {
+                    for (int j = 0; j < snapshot.data!.length; j++) {
+                      for (int i = 0; i < list.length; i++) {
+                        if (snapshot.data![j].nome == list[i]) {
+                          snapshot.data![j].check = true;
+                        }
+                      }
+                    }
                     return Photolist2(photos: snapshot.data!);
                   } else {
                     return const Center(
@@ -86,58 +78,85 @@ class Photolist2 extends StatelessWidget {
   bool isChecked = false;
   final List<Photo> photos;
 
+  Map map1 = {
+    'Be Wine': Colors.pink,
+    'SALONE DELL INNOVAZIONE': Colors.black87,
+    'ENTI E ISTITUZIONI': Colors.cyan,
+    'AUTOMOTIVE': Colors.teal,
+    'ARTICOLI DA REGALO': Colors.deepPurple,
+    'ARTICOLI PER LA CASA': Colors.brown,
+    'SICILIA': Colors.purple,
+    'CENTRO CONGRESSI DEL LEVANTE': Colors.green,
+    'EDILIZIA ABITATIVA': Colors.lightGreen,
+    'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,
+    'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,
+    'SALONE DELL ARREDAMENTO': Colors.blue,
+    'ARREDO PER ESTERNI': Colors.orangeAccent,
+    'AGROALIMENTARE': Colors.lime,
+    'CENTRO SERVIZIO VOLONTARIATO': Colors.blueGrey,
+    'BENESSERE E RELAX': Colors.purpleAccent,
+    'AREA BIMBI': Colors.limeAccent,
+    'MEDITERRANEAN BEAUTY BARI': Colors.yellow
+  };
 
- /* String filter(){
-    if (_PadiglioniState().searchController.text == "") return "null";
-    String result = "";
-    int i = 0;
-    for (i; i<27; i++){
-      if(photos[i].nome.contains(_PadiglioniState().searchController.text)){
-        result = result + photos[i].nome +',';
+  Colorrr(i){
+
+      if (map1.containsKey(photos[i].stand)) {
+       photos[i].color = map1[photos[i].stand];
       }
-    }
-    if (result == '') return 'null';
-    return Text(photos[i].nome).toString();
-  }*/
+
+    return  photos[i].color;
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-          padding: EdgeInsets.only(top:8.00,left:10.00, right: 10.00),
-            itemCount: photos.length,
-            itemBuilder: (context, index) {
-              return Container(
-                padding: EdgeInsets.all(8.00),
-                child:
-             InkWell(
-              onTap: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Dettagli(index: index, data:photos)),
-                );
-              },
+        padding: EdgeInsets.only(top: 8.00, left: 10.00, right: 10.00),
+        itemCount: photos.length,
+        itemBuilder: (context, index) {
+          return Container(
+              padding: EdgeInsets.all(8.00),
               child:
-                Card(
-                child:
-                Column(
-                children: <Widget> [
-                  Center(
+              InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          Dettagli2(index: index, data: photos)),
+                    );
+                  },
+                  child:
+                  Card(
                       child:
-                      ListTile(
-                        title: Text(photos[index].nome, overflow: TextOverflow.ellipsis,maxLines: 2),
+                      Column(
+                          children: <Widget>[
+                            Container(
+                                height: 20,
+                                //width: 400,
+                                color: Colorrr(index)
+                            ),
+                            //Expanded(child:
+                           // Row(
+                             // mainAxisAlignment: MainAxisAlignment.start,
+                               // children:[
+                                ListTile(
+                                  title: Text(photos[index].nome,
+
+                                )),
+                                 // const Icon(Icons.arrow_drop_down )
+                            //   // ]
+                            //)),
+                          ]
                       )
-                  ),
-                    Image.asset('assets/images/padiglione-francia-expo.jpg'),
-                  ]
-                )
+                  )
               )
-              )
-              );
-            }
+          );
+        }
 
     );
   }
 }
+
 
 Future<List<Photo>> fetchPhotos(http.Client client) async {
   final response = await client
@@ -156,7 +175,7 @@ class Photo {
   final String id;
   final String nome;
   bool check = false;
-  //final String descrizione;
+  String? descrizione;
   final String stand;
   Color color = Colors.black38;
   //final String immagine;
@@ -169,7 +188,8 @@ class Photo {
     required this.id,
     required this.nome,
     required this.check,
-     required this.color
+     required this.color,
+     required this.descrizione
   });
 
   factory Photo.fromJson(Map<String, dynamic> json) {
@@ -178,7 +198,7 @@ class Photo {
       nome: json['nome'] as String,
       stand: json['stand'] as String,
       //immagine: json['immagine'] as String,
-      //descrizione: json['descrizione'] as String,
+      descrizione: json['descrizione'] as String,
       check: false,
         color : Colors.black38
     );
