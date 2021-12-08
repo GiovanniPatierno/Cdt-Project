@@ -15,9 +15,35 @@ class Dettagli2 extends StatelessWidget {
   final int index;
   final List<pad.Photo> data;
 
+  Map map2 = {0: 10, 1:24, 2:9, 3:5, 4:19, 5:29, 6:18, 7:10, 8:23, 9:30, 10:20, 11:2, 12: 26, 13:21, 14:14, 15:1, 16:25, 17:22, 18:17, 19:2, 20:10, 21: 2, 22: 16, 23:19, 24:7, 25: 13, 26:9 };
+  String Rischio(map, int Max, int i){
+    String rischio = '';
+    if(Max - map[i] < 7 ){
+      rischio = 'Alto';
+    }
+    if( 14 >= Max - map[i] && Max - map[i] >= 7){
+      rischio = 'Medio';
+    }if(Max - map[i] > 14){
+      rischio = 'Basso';
+    }
+    return rischio;
+  }
 
+  Color ColorRischio(map, int Max, int i){
+    Color rischio = Colors.black;
+    if(Max - map[i] < 7 ){
+      rischio = Colors.red;
+    }
+    if( 14 >= Max - map[i] && Max - map[i] >= 7){
+      rischio = Colors.amber;
+    }if(Max - map[i] > 14){
+      rischio = Colors.green;
+    }
+    return rischio;
+  }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body:
       Column(
@@ -34,11 +60,25 @@ class Dettagli2 extends StatelessWidget {
                     );
                   },
                 )),
-            Container(
+            Center(child: Container(
 
-                margin: const EdgeInsets.only(top: 30 , right: 20, left: 20),
+                margin: const EdgeInsets.only(top: 30),
                 child:
-                Text(data[index].nome, style: const TextStyle(fontSize: 25),)),
+                Text(data[index].nome, style: const TextStyle(fontSize: 25),))),
+            const SizedBox(height: 50),
+            Center(child:
+            Row(children:  [
+              Container(
+                  margin: EdgeInsets.only(left: 140),
+                  child:
+                  const Text("Rischio: ",style: TextStyle(fontSize: 20))
+              ),
+              Text(Rischio(map2,30,index),
+                style: TextStyle(fontSize: 20,
+                    color: ColorRischio(map2,30, index)
+                ),
+              ),
+            ])),
 
             Container(
                 margin: const EdgeInsets.only(top: 150, right: 20, left: 20),

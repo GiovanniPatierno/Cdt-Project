@@ -253,7 +253,7 @@ class Lists extends StatelessWidget {
         rischio = Colors.red;
       }
       if( 14 >= Max - map[i] && Max - map[i] >= 7){
-        rischio = Colors.yellow;
+        rischio = Colors.amber;
       }if(Max - map[i] > 14){
         rischio = Colors.green;
       }
@@ -297,21 +297,23 @@ class Lists extends StatelessWidget {
                           ),
                           const SizedBox(height: 30),
                            Text('Capienza massima: '+data[i].capienzaMax.toString()),
+                          const SizedBox(height: 15),
+                           Text('Visitatori all interno :'+ map2[i].toString()),
                           const SizedBox(height: 20),
-                           Text('Visitatori all interno :'+data[i].capienzaAttuale.toString()),
-                          const SizedBox(height: 20),
+
+                          Center(child:
                           Row(children:  [
                            Container(
-                             margin: EdgeInsets.only(left: 160),
+                             margin: EdgeInsets.only(left: 130),
                                child:
-                               const Text("Rischio: ")
+                               const Text("Rischio: ",style: TextStyle(fontSize: 20))
                            ),
                             Text(Rischio(map2,30,i),
-                              style: TextStyle(
+                              style: TextStyle(fontSize: 20,
                                   color: ColorRischio(map2,30, i)
                               ),
                             ),
-                          ]),
+                          ])),
                           const SizedBox(height: 40),
                           Text( data[i].descrizione!, textAlign: TextAlign.center,)
                         ],
@@ -325,20 +327,31 @@ class Lists extends StatelessWidget {
     );
     }
 
-
+    Map map3 = {'Nuovo padiglione - Salone dell innovazione': 1,'Palesano': 2, 'Padiglioni 85-89': 85, 'Padiglione 90': 90, 'Padiglione 94': 94, 'Padiglione 139': 139, 'Centro congressi del Levante': 3,'Apulia film house': 4, 'Padiglione 19' : 19, 'Padiglione 96': 96, 'Padiglione 20 - Be wine': 20, 'Nuovo padiglione - Salone dell arredamento': 5, 'Nuovo padiglione - Arredo per esterni': 6, 'Padiglione 18': 18, 'Padiglione 20 - Centro servizio volontario': 21, 'Padiglione 71': 71, 'Nuovo padiglione - Benessere e relax': 7, 'Comune di Bari': 8,'Padiglione 149': 149, 'Cineporto':9, 'Padiglione 168': 168, 'Regione Puglia':10, 'Padiglioni 47 Ovest': 47, 'Confartigianato': 11, 'Puglia promozione': 12 ,'Nuovo padiglione - Mediterranean beauty Bari':13};
 
     var poli = <Polygon>[];
     for (int i = 0; i < data.length; i++) {
       poli.add(Polygon(
         points: points = CratorPoints(i),
         //strokeWidth: 5.00,
-        color: Colorrr(i).withOpacity(0.5),
+        color: Colorrr(i).withOpacity(0.3),
         borderColor: Colorrr(i),
         borderStrokeWidth: 1.0,
 
       ));
     }
 
+    var markers2 = <Marker>[];
+    for (int i = 0; i < data.length; i++) {
+      markers2.add(Marker(
+         width: 30,
+         height: 30,
+        //anchorPos: getCenter(i),
+        point: getCenter(i),
+        builder: (ctx) =>
+        Container(child:
+          Center(child: Text(map3[data[i].nome].toString(),style: const TextStyle(fontSize: 15),),))));
+      }
 
     return Scaffold(
         appBar: AppBar(
@@ -382,6 +395,9 @@ class Lists extends StatelessWidget {
             ),
             MarkerLayerOptions(
                 markers: markers
+            ),
+           MarkerLayerOptions(
+               markers: markers2
             )
           ],
         )

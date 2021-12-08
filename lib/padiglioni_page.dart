@@ -31,6 +31,7 @@ class _PadiglioniState extends State<Padiglioni11> {
       list = value.data()!['padiglioni'] as List;
     });
     return Scaffold(
+        backgroundColor: Colors.grey.withOpacity(0.1),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title:const Center( child: Text('Padiglioni')),
@@ -79,7 +80,7 @@ class Photolist2 extends StatelessWidget {
   final List<Photo> photos;
 
   Map map1 = {
-    'Be Wine': Colors.pink,
+    'BE WINE': Colors.pink,
     'SALONE DELL INNOVAZIONE': Colors.black87,
     'ENTI E ISTITUZIONI': Colors.cyan,
     'AUTOMOTIVE': Colors.teal,
@@ -106,6 +107,8 @@ class Photolist2 extends StatelessWidget {
 
     return  photos[i].color;
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +145,8 @@ class Photolist2 extends StatelessWidget {
                                   title: Text(photos[index].nome,
 
                                 )),
+                                 Text(photos[index].stand, style: TextStyle(color: Colorrr(index),), textAlign: TextAlign.start,),
+                            SizedBox(height: 10)
                                  // const Icon(Icons.arrow_drop_down )
                             //   // ]
                             //)),

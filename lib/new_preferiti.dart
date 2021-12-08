@@ -66,15 +66,17 @@ class Photolist2 extends StatelessWidget {
   Photolist2({Key? key, required this.photos}) : super(key: key);
   final List<Photo> photos;
 
-  Map map1 ={'Be Wine' : Colors.pink, 'SALONE DELL INNOVAZIONE':Colors.black87,'ENTI E ISTITUZIONI':Colors.cyan,'AUTOMOTIVE':Colors.teal,'ARTICOLI DA REGALO':Colors.deepPurple,'ARTICOLI PER LA CASA': Colors.brown,'SICILIA':Colors.purple,'CENTRO CONGRESSI DEL LEVANTE':Colors.green, 'EDILIZIA ABITATIVA':Colors.lightGreen,'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,'SALONE DELL ARREDAMENTO':Colors.blue,'ARREDO PER ESTERNI':Colors.orangeAccent,'AGROALIMENTARE':Colors.lime,'CENTRO SERVIZIO VOLONTARIATO':Colors.blueGrey,'BENESSERE E RELAX': Colors.purpleAccent,'AREA BIMBI':Colors.limeAccent,'MEDITERRANEAN BEAUTY BARI':Colors.yellow};
+  Map map1 ={'BE WINE' : Colors.pink, 'SALONE DELL INNOVAZIONE':Colors.black87,'ENTI E ISTITUZIONI':Colors.cyan,'AUTOMOTIVE':Colors.teal,'ARTICOLI DA REGALO':Colors.deepPurple,'ARTICOLI PER LA CASA': Colors.brown,'SICILIA':Colors.purple,'CENTRO CONGRESSI DEL LEVANTE':Colors.green, 'EDILIZIA ABITATIVA':Colors.lightGreen,'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,'ARTIGIANATO ESTERO': Colors.deepOrangeAccent,'SALONE DELL ARREDAMENTO':Colors.blue,'ARREDO PER ESTERNI':Colors.orangeAccent,'AGROALIMENTARE':Colors.lime,'CENTRO SERVIZIO VOLONTARIATO':Colors.blueGrey,'BENESSERE E RELAX': Colors.purpleAccent,'AREA BIMBI':Colors.limeAccent,'MEDITERRANEAN BEAUTY BARI':Colors.yellow};
 
 
   @override
   Widget build(BuildContext context) {
     //String color;
-    return Scaffold(appBar: AppBar(
+    return Scaffold(
+      backgroundColor: Colors.grey.withOpacity(0.1),
+        appBar: AppBar(
       automaticallyImplyLeading: false,
-      title:const Center( child: Text('Preferiti')),
+      title:const Center( child: Text('Personalizza')),
       backgroundColor: Colors.black,
     ),
         body:
@@ -128,20 +130,11 @@ class Photolist2 extends StatelessWidget {
                                           Container(
                                               margin: const EdgeInsets.only(
                                                   left: 15, top: 10),
-                                              child:
-                                              const Text(
-                                                'descrizione',
-                                                style: TextStyle(
-                                                  fontFamily: 'Roboto',
-                                                  fontSize: 16,
-                                                  color: Color(0xde000000),
-                                                  letterSpacing: 0.496,
-                                                  height: 1.5,
-                                                ),
-                                              )),
+                                          ),
+
                                           Container(
                                               padding: const EdgeInsets.only(
-                                                  left: 160),
+                                                  left: 230),
                                               child: Button1(
                                                 photos: photos, index: index,)
                                           )
@@ -173,7 +166,7 @@ class Photolist2 extends StatelessWidget {
           )),
 
          Container(
-            padding: const EdgeInsets.only(bottom: 45, top: 10),
+            padding: const EdgeInsets.only(bottom: 20, top: 10),
             child:
             ElevatedButton(
               style: ElevatedButton.styleFrom(

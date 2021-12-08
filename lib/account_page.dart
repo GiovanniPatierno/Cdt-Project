@@ -82,11 +82,7 @@ class _AccountState extends State<Account> {
                 ]),
            Container(
              padding: const EdgeInsets.all(10),
-           child: const Text("Giovanni Paolo Patierno",
-             style: TextStyle(
-                 color: Colors.white
-             ),
-           ),
+
 
            )
                ]
@@ -107,7 +103,7 @@ class _AccountState extends State<Account> {
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child:
-                const Text("Giovanni Paolo",
+                const Text("Nome",
                     style: TextStyle(
                       //fontSize: 30,
                       fontWeight: FontWeight.normal,
@@ -126,7 +122,7 @@ class _AccountState extends State<Account> {
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child:
-                const Text("Patierno",
+                const Text("Cognome",
                     style: TextStyle(
                       //fontSize: 30,
                       fontWeight: FontWeight.normal,

@@ -59,7 +59,7 @@ class SwitchState extends State<Switchh> {
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.star),
-              label: 'Preferiti'
+              label: 'Personalizza'
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.person),

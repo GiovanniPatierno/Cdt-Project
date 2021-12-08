@@ -1,7 +1,9 @@
 import 'package:cdt/login_page/stand.dart';
+import 'package:cdt/login_page/stand2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../new_preferiti.dart';
 import '../switchh.dart';
 
 class PostLogin extends StatefulWidget {
@@ -51,7 +53,7 @@ class _PreStandState extends State<PostLogin> {
                 ),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (contex) => const Stand()));
+                      MaterialPageRoute(builder: (contex) => const Stand3()));
                 },
                 child: const Text('NUOVO PERCORSO'),
               )

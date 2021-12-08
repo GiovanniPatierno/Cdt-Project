@@ -16,29 +16,24 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as Bottom;
 
 
 
-class Stand extends StatefulWidget {
-  const Stand({Key? key}) : super(key: key);
+class Stand3 extends StatefulWidget {
+  const Stand3({Key? key}) : super(key: key);
 
   @override
   _StandState createState() => _StandState();
 }
 
-class _StandState extends State<Stand> {
+class _StandState extends State<Stand3> {
   List list = [];
   @override
   Widget build(BuildContext context) {
+    DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child(
+        "users");
+    final _auth1 = FirebaseAuth.instance;
+    bool isButtonPressed = false;
 
 
-    Future.delayed(Duration.zero, () =>
-    Bottom.showMaterialModalBottomSheet(context: context, builder: (builder){
-      return Container(
-        padding: EdgeInsets.all(20),
-        height: 200,
-          color: Colors.white,
-          child:const Text('Per completare la registrazione inserisci i padiglioni che desideri visitare \n ',style: TextStyle(color: Colors.black, fontSize: 20), textAlign: TextAlign.center)
 
-      );
-    }));
     var firebaseUser = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance.collection("users").doc(firebaseUser!.uid)
         .get()
@@ -46,47 +41,55 @@ class _StandState extends State<Stand> {
       list = value.data()!['padiglioni'] as List;
     });
     return  Scaffold(
-      //backgroundColor:  Colors.grey.withOpacity(0.3),
-      body:Column(children: <Widget>[
-        Container(
-            color: Colors.grey.withOpacity(0.1),
-            width: 1000,
-            padding: const EdgeInsets.only(right: 260, top : 40, left: 20),
-            child:
-            const Text('Padiglioni:', style: TextStyle(color: Colors.black, fontSize: 20) , textAlign: TextAlign.left, )),
-      Expanded(child:
-      FutureBuilder<List<Photo>>(
-        future: fetchPhotos(http.Client()),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return  Center(
-              child: Text(snapshot.error.toString()),
-            );
-          } else if (snapshot.hasData) {
-            for (int j = 0; j < snapshot.data!.length; j++) {
-              for (int i = 0; i < list.length; i++) {
-                if (snapshot.data![j].nome == list[i]) {
-                  snapshot.data![j].check = true;
+        body:Column(children: <Widget>[
+          Expanded(child:
+          FutureBuilder<List<Photo>>(
+            future: fetchPhotos(http.Client()),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return  Center(
+                  child: Text(snapshot.error.toString()),
+                );
+              } else if (snapshot.hasData) {
+                for (int j = 0; j < snapshot.data!.length; j++) {
+                      removeDetailToFirestore1(j, snapshot.data);
+
+
                 }
+                return Photolist2(photos: snapshot.data!);
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
               }
-            }
-            return Photolist2(photos: snapshot.data!);
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      )),
-      ]
-      )
+            },
+          )),
+        ]
+        )
     );
+
   }
+  removeDetailToFirestore1(int index, data) async {
+    DatabaseReference dbRef1 = FirebaseDatabase.instance.reference().child(
+        "users");
+    final _auth1 = FirebaseAuth.instance;
+
+    FirebaseFirestore firebaseFirestore1 = FirebaseFirestore.instance;
+    User? user = _auth1.currentUser;
+
+    await firebaseFirestore1
+        .collection("users")
+        .doc(user!.uid)
+        .update({
+      'padiglioni': FieldValue.arrayRemove([data[index].nome])
+    });
+  }
+
 }
 
 //class Photolist2 extends StatelessWidget {
- // Photolist2({Key? key, required this.photos}) : super(key: key);
-  //final List<Photo> photos;
+// Photolist2({Key? key, required this.photos}) : super(key: key);
+//final List<Photo> photos;
 
 class Photolist2 extends StatefulWidget {
   const Photolist2({Key? key, required this.photos}) : super(key: key);
@@ -151,61 +154,61 @@ class _Photolist2State extends State<Photolist2> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                      Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 15, top: 10),
-                                          child:
-                                          Text(
-                                            widget.photos[index].nome,
-                                            //textAlign: TextAlign.start,
-                                            style: const TextStyle(
-                                              fontFamily: 'Roboto',
-                                              fontSize: 20,
-                                              color: Color(0xde000000),
-                                              letterSpacing: 0.15000000953674317,
-                                              fontWeight: FontWeight.w500,
-                                              height: 1.2,
-                                            ),
-                                          )),
-
-                                      Container(
-                                        margin: const EdgeInsets.only(
-                                            left: 16, top: 13, right: 24),
-                                        child:
-                                        DropdownButtonHideUnderline(child:
-                                            DropdownButton(
-                                              elevation: 8,
-                                              autofocus: true,
-                                              isExpanded: true,
-                                            icon: Icon(Icons.info_outline),
-                                            value: _value,
-                                            items: [
-                                              const DropdownMenuItem(
-                                                child: Text("Info"),
-                                                value: 1,
-                                              ),
-                                              DropdownMenuItem(
-                                                child: Container(padding:EdgeInsets.all(20),
-                                              child:Text(widget.photos[index]
-                                                    .descrizione!, textAlign: TextAlign.start,)),
-                                                value: 2,
-                                              ),
-
-                                            ],
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _value = value as int?;
-                                              });
-                                            },hint:Text("info"),
-
-                                      ))),
-                                      Container(
-                                          padding: const EdgeInsets.only(top:10,
-                                              left: 150),
-                                          child: Button1(
-                                            photos: widget.photos,
-                                            index: index,)
+                                Container(
+                                    margin: const EdgeInsets.only(
+                                        left: 15, top: 10),
+                                    child:
+                                    Text(
+                                      widget.photos[index].nome,
+                                      //textAlign: TextAlign.start,
+                                      style: const TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontSize: 20,
+                                        color: Color(0xde000000),
+                                        letterSpacing: 0.15000000953674317,
+                                        fontWeight: FontWeight.w500,
+                                        height: 1.2,
                                       ),
+                                    )),
+
+                                Container(
+                                    margin: const EdgeInsets.only(
+                                        left: 16, top: 13, right: 24),
+                                    child:
+                                    DropdownButtonHideUnderline(child:
+                                    DropdownButton(
+                                      elevation: 8,
+                                      autofocus: true,
+                                      isExpanded: true,
+                                      icon: Icon(Icons.info_outline),
+                                      value: _value,
+                                      items: [
+                                        const DropdownMenuItem(
+                                          child: Text("Info"),
+                                          value: 1,
+                                        ),
+                                        DropdownMenuItem(
+                                          child: Container(padding:EdgeInsets.all(20),
+                                              child:Text(widget.photos[index]
+                                                  .descrizione!, textAlign: TextAlign.start,)),
+                                          value: 2,
+                                        ),
+
+                                      ],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _value = value as int?;
+                                        });
+                                      },hint:Text("info"),
+
+                                    ))),
+                                Container(
+                                    padding: const EdgeInsets.only(top:10,
+                                        left: 150),
+                                    child: Button1(
+                                      photos: widget.photos,
+                                      index: index,)
+                                ),
                                 Container(margin: const EdgeInsets.only(
                                     left: 15.00, top: 40, bottom: 7),
                                     child:
@@ -234,7 +237,7 @@ class _Photolist2State extends State<Photolist2> {
           )),
 
           Container(
-            padding: const EdgeInsets.only(top: 10, bottom: 15),
+            padding: const EdgeInsets.only(top: 10, bottom: 20),
             child:
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -243,7 +246,7 @@ class _Photolist2State extends State<Photolist2> {
               ),
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (contex) => const PostStand()));
+                    MaterialPageRoute(builder: (contex) => Switchh(index2: 2)));
                 _showToast(context);
               },
               child: const Text('Continua'),

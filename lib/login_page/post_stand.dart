@@ -46,7 +46,7 @@ class _PreStandState extends State<PostStand> {
                 )),
             const Center(
                 child: Text(
-                  "Le tue scelte possono essere cambiate\n nella sezione preferiti \n",
+                  "Le tue scelte possono essere cambiate\n nella sezione personalizza \n",
                   style: TextStyle(
                     fontFamily: 'Roboto',
                     fontSize: 13,
