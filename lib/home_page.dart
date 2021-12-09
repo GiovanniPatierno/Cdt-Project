@@ -126,9 +126,9 @@
                       mainAxisSize: MainAxisSize.min,
                       children: const <Widget>[
                         ListTile(
-                          leading: Icon(Icons.album, size: 50),
-                          title: Text('Heart Shaker'),
-                          subtitle: Text('TWICE'),
+                          leading: Icon(Icons.add_box_outlined, size: 50),
+                          title: Text('Regole anti Covid-19'),
+                          subtitle: Text('prevenzione'),
                         ),
                       ],
                     ),
@@ -139,9 +139,9 @@
                       mainAxisSize: MainAxisSize.min,
                       children: const <Widget>[
                         ListTile(
-                          leading: Icon(Icons.album, size: 50),
-                          title: Text('Heart Shaker'),
-                          subtitle: Text('TWICE'),
+                          leading: Icon(Icons.event, size: 50),
+                          title: Text('Living Dinosaur'),
+                          subtitle: Text('22-10-2021'),
                         ),
                       ],
                     ),
@@ -152,9 +152,9 @@
                       mainAxisSize: MainAxisSize.min,
                       children: const <Widget>[
                         ListTile(
-                          leading: Icon(Icons.album, size: 50),
-                          title: Text('Heart Shaker'),
-                          subtitle: Text('TWICE'),
+                          leading: Icon(Icons.event, size: 50),
+                          title: Text('ENOLINEXPO'),
+                          subtitle: Text('10-03-2022'),
                         ),
                       ],
                     ),
@@ -165,9 +165,9 @@
                       mainAxisSize: MainAxisSize.min,
                       children: const <Widget>[
                         ListTile(
-                          leading: Icon(Icons.album, size: 50),
-                          title: Text('Heart Shaker'),
-                          subtitle: Text('TWICE'),
+                          leading: Icon(Icons.event, size: 50),
+                          title: Text('SMART BUILDING LEVANTE'),
+                          subtitle: Text('10-05-2022'),
                         ),
                       ],
                     ),
@@ -178,39 +178,14 @@
                       mainAxisSize: MainAxisSize.min,
                       children: const <Widget>[
                         ListTile(
-                          leading: Icon(Icons.album, size: 50),
-                          title: Text('Heart Shaker'),
-                          subtitle: Text('TWICE'),
+                          leading: Icon(Icons.event, size: 50),
+                          title: Text('85° Fiera del Levante'),
+                          subtitle: Text('19-02-2022'),
                         ),
                       ],
                     ),
                   ),
-                  Card(
-                    margin: const EdgeInsets.only(right: 15.00, left: 15.00,bottom: 5, top:5),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const <Widget>[
-                        ListTile(
-                          leading: Icon(Icons.album, size: 50),
-                          title: Text('Heart Shaker'),
-                          subtitle: Text('TWICE'),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Card(
-                    margin: const EdgeInsets.only(right: 15.00, left: 15.00,bottom: 5, top:5),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const <Widget>[
-                        ListTile(
-                          leading: Icon(Icons.album, size: 50),
-                          title: Text('Heart Shaker'),
-                          subtitle: Text('TWICE'),
-                        ),
-                      ],
-                    ),
-                  ),
+
                 ],
               )
               )

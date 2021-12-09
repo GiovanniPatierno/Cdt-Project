@@ -362,7 +362,7 @@ class Lists extends StatelessWidget {
         body: FlutterMap(
           options: MapOptions(
             center: latLng.LatLng(41.136423, 16.838197),
-            zoom: 15.0,
+            zoom: 17.0,
             plugins: [
               const LocationMarkerPlugin(),
             ],
